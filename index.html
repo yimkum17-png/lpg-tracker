@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LPG Daily Return — Dhubri District</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<style>
+/* ── RESET & BASE ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0d1b2a;--navy2:#1a2f45;--navy3:#243f5a;
+  --teal:#00c9a7;--teal2:#00a388;--teal-dim:#00c9a720;
+  --amber:#f5a623;--amber-dim:#f5a62320;
+  --red:#e74c3c;--red-dim:#e74c3c18;
+  --green:#27ae60;--green-dim:#27ae6018;
+  --text:#e8edf2;--text2:#8fa3b8;--text3:#5a7490;
+  --border:#1e3449;--border2:#2a4a68;
+  --card:#132236;--card2:#0f1d2e;
+  --font:'IBM Plex Sans',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+  --radius:10px;--radius-sm:6px;
+  --shadow:0 4px 24px rgba(0,0,0,.35);
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--navy);color:var(--text);min-height:100vh;font-size:14px;line-height:1.5}
+a{color:var(--teal);text-decoration:none}
+button{font-family:var(--font);cursor:pointer}
+input,select{font-family:var(--font)}
+
+/* ── HEADER ── */
+.header{background:var(--navy2);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;position:sticky;top:0;z-index:100;height:58px}
+.header-brand{display:flex;align-items:center;gap:10px}
+.header-brand .logo{width:34px;height:34px;background:var(--teal);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.header-brand h1{font-size:14px;font-weight:700;color:var(--text);letter-spacing:.2px}
+.header-brand p{font-size:11px;color:var(--text2)}
+.header-right{display:flex;align-items:center;gap:16px}
+#live-clock{font-family:var(--mono);font-size:12px;color:var(--teal);background:var(--teal-dim);padding:5px 10px;border-radius:var(--radius-sm);border:1px solid var(--teal)30;white-space:nowrap}
+.conn-dot{width:8px;height:8px;border-radius:50%;background:#555;flex-shrink:0;transition:background .3s}
+.conn-dot.live{background:var(--teal);box-shadow:0 0 8px var(--teal)}
+.conn-status{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text2)}
+
+/* ── NAV ── */
+.nav{background:var(--card2);border-bottom:1px solid var(--border);display:flex;padding:0 28px;gap:0;overflow-x:auto}
+.nav-btn{background:none;border:none;color:var(--text2);padding:0 18px;height:44px;font-size:13px;font-weight:500;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.nav-btn:hover{color:var(--text)}
+.nav-btn.active{color:var(--teal);border-bottom-color:var(--teal)}
+.nav-btn .nav-icon{font-size:15px}
+
+/* ── MAIN ── */
+main{max-width:1360px;margin:0 auto;padding:24px 28px}
+.page{display:none;animation:fadeIn .2s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ── SECTION HEADER ── */
+.sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap}
+.sec-title{font-size:16px;font-weight:700;color:var(--text)}
+.sec-sub{font-size:12px;color:var(--text2);margin-top:2px}
+
+/* ── STAT CARDS ── */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:24px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;position:relative;overflow:hidden;transition:border-color .2s}
+.stat-card:hover{border-color:var(--border2)}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--teal)}
+.stat-card.amber::before{background:var(--amber)}
+.stat-card.green::before{background:var(--green)}
+.stat-card.red::before{background:var(--red)}
+.stat-label{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;font-weight:600}
+.stat-value{font-size:26px;font-weight:700;font-family:var(--mono);color:var(--text);line-height:1}
+.stat-detail{font-size:11px;color:var(--text3);margin-top:6px}
+
+/* ── CHARTS ── */
+.charts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(480px,1fr));gap:16px;margin-bottom:24px}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
+.chart-title{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:16px;text-transform:uppercase;letter-spacing:.5px}
+.chart-wrap{position:relative;height:240px}
+
+/* ── DATE PICKER STYLED ── */
+.date-select{background:var(--card);border:1px solid var(--border2);color:var(--text);border-radius:var(--radius-sm);padding:7px 12px;font-size:13px;outline:none;cursor:pointer}
+.date-select:focus{border-color:var(--teal)}
+.date-select option{background:var(--navy2)}
+
+/* ── DATA TABLE ── */
+.table-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.table-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+thead th{background:var(--navy2);color:var(--text2);padding:10px 11px;text-align:center;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap;border-bottom:1px solid var(--border)}
+thead th.left{text-align:left}
+thead .th-group{background:var(--navy3)}
+tbody td{padding:9px 11px;border-bottom:1px solid var(--border);text-align:center;font-family:var(--mono);font-size:12px;color:var(--text)}
+tbody td.left{text-align:left;font-family:var(--font);font-size:12.5px}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:rgba(0,201,167,.04)}
+tfoot td{background:var(--navy2);color:var(--teal);font-family:var(--mono);font-size:12px;font-weight:700;padding:10px 11px;text-align:center;border-top:2px solid var(--teal)40}
+tfoot td.left{text-align:left;color:var(--text2);font-family:var(--font)}
+.zero{color:var(--text3)}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.3px}
+.badge-hp{background:#1a3a6b;color:#7ab3f0}
+.badge-indane{background:#3a2800;color:#f5c842}
+.agency-name{font-weight:500;color:var(--text);max-width:200px}
+.agency-name small{display:block;color:var(--text3);font-size:10.5px;font-family:var(--font);font-weight:400;margin-top:1px}
+
+/* ── NOTICE BANNERS ── */
+.notice{padding:11px 16px;border-radius:var(--radius-sm);font-size:13px;margin-bottom:16px;border:1px solid;display:flex;align-items:flex-start;gap:8px}
+.notice-icon{font-size:16px;flex-shrink:0}
+.notice-info{background:var(--teal-dim);border-color:var(--teal)40;color:var(--teal)}
+.notice-warn{background:var(--amber-dim);border-color:var(--amber)40;color:var(--amber)}
+.notice-success{background:var(--green-dim);border-color:var(--green)40;color:var(--green)}
+.notice-error{background:var(--red-dim);border-color:var(--red)40;color:var(--red)}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;border:none;transition:all .15s;white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn-teal{background:var(--teal);color:var(--navy)}
+.btn-teal:hover{background:var(--teal2)}
+.btn-outline{background:transparent;color:var(--text2);border:1px solid var(--border2)}
+.btn-outline:hover{border-color:var(--teal);color:var(--teal)}
+.btn-red{background:var(--red);color:#fff}
+.btn-red:hover{background:#c0392b}
+.btn-amber{background:var(--amber);color:var(--navy)}
+.btn-amber:hover{filter:brightness(.9)}
+.btn-sm{padding:6px 13px;font-size:12px}
+
+/* ── PIN MODAL ── */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center;z-index:500;backdrop-filter:blur(4px)}
+.modal{background:var(--card);border:1px solid var(--border2);border-radius:14px;padding:32px;width:340px;box-shadow:var(--shadow);text-align:center}
+.modal h2{font-size:17px;font-weight:700;margin-bottom:6px}
+.modal p{font-size:13px;color:var(--text2);margin-bottom:24px}
+.pin-dots{display:flex;justify-content:center;gap:10px;margin-bottom:20px}
+.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--border2);transition:all .2s}
+.pin-dot.filled{background:var(--teal);border-color:var(--teal)}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:220px;margin:0 auto 16px}
+.pin-key{background:var(--navy2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:14px;font-size:18px;font-weight:600;font-family:var(--mono);transition:all .15s}
+.pin-key:hover{background:var(--navy3);border-color:var(--border2)}
+.pin-key:active{transform:scale(.93)}
+.pin-error{color:var(--red);font-size:12px;height:18px;margin-top:-8px}
+
+/* ── ENTRY FORM ── */
+.entry-header{display:flex;align-items:center;gap:14px;margin-bottom:20px;flex-wrap:wrap}
+.entry-date-input{background:var(--card);border:1px solid var(--border2);color:var(--text);border-radius:var(--radius-sm);padding:8px 12px;font-size:13px;font-family:var(--font)}
+.entry-date-input:focus{outline:2px solid var(--teal);border-color:transparent}
+.cell-input{width:72px;background:var(--navy2);border:1px solid var(--border);color:var(--text);border-radius:5px;padding:5px 7px;font-size:12px;text-align:right;font-family:var(--mono);transition:border-color .15s}
+.cell-input:focus{outline:none;border-color:var(--teal);background:var(--navy3)}
+.cell-input.computed{background:rgba(0,201,167,.07);color:var(--teal);border-color:var(--teal)30;cursor:default}
+.cell-input.sale{border-color:var(--amber)40;background:rgba(245,166,35,.05)}
+.cell-input.sale:focus{border-color:var(--amber)}
+.totals-row td{background:var(--navy2);font-family:var(--mono);font-size:12px;font-weight:700;color:var(--teal);text-align:center;padding:9px 11px;border-top:2px solid var(--teal)30}
+
+/* ── HISTORY ── */
+.history-grid{display:grid;gap:10px}
+.history-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;transition:border-color .2s}
+.history-card:hover{border-color:var(--border2)}
+.history-date{font-weight:700;font-size:14px;color:var(--teal);font-family:var(--mono)}
+.history-meta{display:flex;gap:20px;flex-wrap:wrap}
+.hm-item{font-size:12px;color:var(--text2)}
+.hm-item span{font-weight:700;color:var(--text);font-family:var(--mono)}
+.history-actions{display:flex;gap:8px}
+
+/* ── EXPORT ── */
+.export-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:14px}
+.export-card h3{font-size:13px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.export-card p{font-size:13px;color:var(--text2);margin-bottom:14px}
+.export-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+/* ── LOADING SKELETON ── */
+.skeleton{background:linear-gradient(90deg,var(--border) 25%,var(--border2) 50%,var(--border) 75%);background-size:400% 100%;animation:shimmer 1.4s infinite;border-radius:6px;height:20px}
+@keyframes shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:24px;right:24px;background:var(--navy2);color:var(--text);border:1px solid var(--border2);padding:11px 18px;border-radius:8px;font-size:13px;font-weight:500;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;transform:translateY(8px);z-index:999;box-shadow:var(--shadow);max-width:320px}
+#toast.show{opacity:1;transform:none}
+#toast.success{border-color:var(--teal)60;color:var(--teal)}
+#toast.error{border-color:var(--red)60;color:var(--red)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  main{padding:16px 14px}
+  .header{padding:0 14px}
+  .nav{padding:0 14px}
+  .charts-grid{grid-template-columns:1fr}
+  #live-clock{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-brand">
+    <div class="logo">⛽</div>
+    <div>
+      <h1>LPG Daily Return Tracker</h1>
+      <p>District Commissioner's Office · Dhubri, Assam</p>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="conn-status"><div class="conn-dot" id="conn-dot"></div><span id="conn-label">Connecting…</span></div>
+    <div id="live-clock">--:--:-- --</div>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="nav-btn active" onclick="showPage('dashboard',this)"><span class="nav-icon">📊</span>Dashboard</button>
+  <button class="nav-btn" onclick="showPage('entry',this)"><span class="nav-icon">✏️</span>Daily Entry</button>
+  <button class="nav-btn" onclick="showPage('history',this)"><span class="nav-icon">📅</span>History</button>
+  <button class="nav-btn" onclick="showPage('export',this)"><span class="nav-icon">⬇️</span>Export</button>
+</nav>
+
+<main>
+
+<!-- DASHBOARD -->
+<div id="page-dashboard" class="page active">
+  <div class="sec-header">
+    <div><div class="sec-title">Summary Dashboard</div><div class="sec-sub">Live data from Firebase · auto-refreshes every 60s</div></div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <select class="date-select" id="dash-date" onchange="renderDashboard()"><option>Loading…</option></select>
+      <button class="btn btn-outline btn-sm" onclick="refreshAll()">↻ Refresh</button>
+    </div>
+  </div>
+  <div id="dash-notice"></div>
+  <div class="stat-grid" id="stat-grid">
+    <div class="stat-card"><div class="skeleton" style="width:60%;height:11px;margin-bottom:12px"></div><div class="skeleton" style="width:80%;height:26px"></div></div>
+    <div class="stat-card"><div class="skeleton" style="width:60%;height:11px;margin-bottom:12px"></div><div class="skeleton" style="width:80%;height:26px"></div></div>
+    <div class="stat-card"><div class="skeleton" style="width:60%;height:11px;margin-bottom:12px"></div><div class="skeleton" style="width:80%;height:26px"></div></div>
+    <div class="stat-card"><div class="skeleton" style="width:60%;height:11px;margin-bottom:12px"></div><div class="skeleton" style="width:80%;height:26px"></div></div>
+  </div>
+  <div class="charts-grid">
+    <div class="chart-card"><div class="chart-title">📈 Daily Sales Trend — Domestic &amp; Commercial</div><div class="chart-wrap"><canvas id="chart-trend"></canvas></div></div>
+    <div class="chart-card"><div class="chart-title">📦 Stock Movement — Opening · Received · Closing</div><div class="chart-wrap"><canvas id="chart-stock"></canvas></div></div>
+  </div>
+  <div class="table-card">
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th rowspan="2" style="width:32px">Sl.</th>
+            <th rowspan="2" class="left" style="min-width:80px">Dist.</th>
+            <th rowspan="2" class="left" style="min-width:180px">Agency Name</th>
+            <th colspan="2" style="background:#0f2a45">Connections</th>
+            <th colspan="2" class="th-group">Opening Stock</th>
+            <th colspan="2" class="th-group">Received</th>
+            <th colspan="2" class="th-group">Total (E+F)</th>
+            <th colspan="2" class="th-group" style="background:#2d1a00">Sales</th>
+            <th colspan="2" class="th-group">Closing Stock</th>
+          </tr>
+          <tr>
+            <th style="background:#0f2a45">Dom</th><th style="background:#0f2a45">Comm</th>
+            <th>Dom</th><th>Comm</th>
+            <th>Dom</th><th>Comm</th>
+            <th>Dom</th><th>Comm</th>
+            <th style="background:#2d1a00">Dom</th><th style="background:#2d1a00">Comm</th>
+            <th>Dom</th><th>Comm</th>
+          </tr>
+        </thead>
+        <tbody id="dash-tbody"><tr><td colspan="15" style="text-align:center;padding:24px;color:var(--text2)">Loading data…</td></tr></tbody>
+        <tfoot><tr id="dash-tfoot"><td colspan="15"></td></tr></tfoot>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ENTRY -->
+<div id="page-entry" class="page">
+  <div id="entry-locked" style="max-width:480px;margin:40px auto;text-align:center">
+    <div style="font-size:48px;margin-bottom:16px">🔒</div>
+    <h2 style="font-size:18px;font-weight:700;margin-bottom:8px">Entry Protected</h2>
+    <p style="color:var(--text2);margin-bottom:24px;font-size:14px">Enter the operator PIN to access the daily data entry form.</p>
+    <button class="btn btn-teal" style="margin:0 auto" onclick="showPinModal()">Enter PIN</button>
+  </div>
+  <div id="entry-unlocked" style="display:none">
+    <div class="sec-header">
+      <div><div class="sec-title">Daily Return Entry</div><div class="sec-sub" id="entry-time-notice">Loading…</div></div>
+      <button class="btn btn-outline btn-sm" onclick="lockEntry()">🔒 Lock</button>
+    </div>
+    <div class="entry-header">
+      <label style="font-size:13px;font-weight:600;color:var(--text2)">Return Date:</label>
+      <input type="date" class="entry-date-input" id="entry-date">
+      <button class="btn btn-teal btn-sm" onclick="loadEntryForm()">Load Form</button>
+      <span id="entry-status-msg" style="font-size:12px;color:var(--text2)"></span>
+    </div>
+    <div id="entry-notice"></div>
+    <div id="entry-form-wrap"></div>
+  </div>
+</div>
+
+<!-- HISTORY -->
+<div id="page-history" class="page">
+  <div class="sec-header">
+    <div><div class="sec-title">Daily Return History</div><div class="sec-sub">All recorded dates</div></div>
+  </div>
+  <div id="history-list" class="history-grid"><div style="color:var(--text2);font-size:13px">Loading…</div></div>
+</div>
+
+<!-- EXPORT -->
+<div id="page-export" class="page">
+  <div class="sec-header"><div class="sec-title">Export Data</div></div>
+  <div class="export-card">
+    <h3>Download as CSV</h3>
+    <p>Download a date-wise CSV of all recorded returns — opens in Excel or Google Sheets.</p>
+    <div class="export-row">
+      <select class="date-select" id="export-date1"></select>
+      <button class="btn btn-teal" onclick="exportCSV()">⬇ Download CSV</button>
+      <button class="btn btn-outline" onclick="exportAllCSV()">⬇ All Dates</button>
+    </div>
+  </div>
+  <div class="export-card">
+    <h3>Copy to Clipboard (Tab-Separated)</h3>
+    <p>Copy and paste directly into Excel or Google Sheets using Ctrl+V.</p>
+    <div class="export-row">
+      <select class="date-select" id="export-date2"></select>
+      <button class="btn btn-amber" onclick="copyTSV()">📋 Copy to Clipboard</button>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- PIN MODAL -->
+<div class="modal-bg" id="pin-modal" style="display:none">
+  <div class="modal">
+    <div style="font-size:32px;margin-bottom:12px">🔐</div>
+    <h2>Operator PIN</h2>
+    <p>Enter the 4-digit PIN to unlock data entry</p>
+    <div class="pin-dots" id="pin-dots">
+      <div class="pin-dot" id="pd0"></div>
+      <div class="pin-dot" id="pd1"></div>
+      <div class="pin-dot" id="pd2"></div>
+      <div class="pin-dot" id="pd3"></div>
+    </div>
+    <div class="pin-pad">
+      <button class="pin-key" onclick="pinKey('1')">1</button>
+      <button class="pin-key" onclick="pinKey('2')">2</button>
+      <button class="pin-key" onclick="pinKey('3')">3</button>
+      <button class="pin-key" onclick="pinKey('4')">4</button>
+      <button class="pin-key" onclick="pinKey('5')">5</button>
+      <button class="pin-key" onclick="pinKey('6')">6</button>
+      <button class="pin-key" onclick="pinKey('7')">7</button>
+      <button class="pin-key" onclick="pinKey('8')">8</button>
+      <button class="pin-key" onclick="pinKey('9')">9</button>
+      <button class="pin-key" onclick="pinClear()" style="font-size:13px">CLR</button>
+      <button class="pin-key" onclick="pinKey('0')">0</button>
+      <button class="pin-key" onclick="pinBack()" style="font-size:16px">⌫</button>
+    </div>
+    <div class="pin-error" id="pin-error"></div>
+    <button class="btn btn-outline btn-sm" style="margin-top:8px" onclick="closePinModal()">Cancel</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════
+//  !! REPLACE THIS BLOCK WITH YOUR FIREBASE CONFIG !!
+// ══════════════════════════════════════════════
+const firebaseConfig = {
+   apiKey: "AIzaSyBHFLMms4-z0hxBJBHgLMNg4TQoyBLbPaE",
+  authDomain: "lpg-tracker-dhubri.firebaseapp.com",
+  projectId: "lpg-tracker-dhubri",
+  storageBucket: "lpg-tracker-dhubri.firebasestorage.app",
+  messagingSenderId: "1046965356839",
+  appId: "1:1046965356839:web:068f1a3cad2950e6934102",
+  measurementId: "G-MGQBS8JLZ7"
+
+};
+// ══════════════════════════════════════════════
+//  CHANGE THIS PIN (4 digits)
+const OPERATOR_PIN = "1234";
+// ══════════════════════════════════════════════
+
+// ── FIREBASE INIT ──
+let db;
+let allData = {};
+let charTrend, chartStock;
+
+try {
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.database();
+  db.ref('.info/connected').on('value', snap => {
+    const live = snap.val();
+    document.getElementById('conn-dot').className = 'conn-dot' + (live ? ' live' : '');
+    document.getElementById('conn-label').textContent = live ? 'Live' : 'Offline';
+  });
+  db.ref('lpg_returns').on('value', snap => {
+    allData = snap.val() || {};
+    onDataUpdate();
+  });
+} catch(e) {
+  document.getElementById('conn-label').textContent = 'Config needed';
+  showNotice('dash-notice','warn','⚠️ Firebase not configured yet. Open index.html and paste your firebaseConfig. Dashboard will work once connected.');
+  // Load seed data for preview
+  allData = getSeedData();
+  onDataUpdate();
+}
+
+// ── AGENCIES ──
+const AGENCIES = [
+  {sl:1,distributor:"HP",name:"AGOMANI HP GAS GRAMIN VITARAK",conn_dom:0,conn_comm:0},
+  {sl:2,distributor:"INDANE",name:"MAHIRA INDIAN GRAMIN VITARAK",conn_dom:0,conn_comm:0},
+  {sl:3,distributor:"INDANE",name:"M/S KRISHNA GAS SERVICE",conn_dom:41232,conn_comm:122},
+  {sl:4,distributor:"INDANE",name:"TARANGAJHAR INDANE GRAMIN VITARAK",conn_dom:17728,conn_comm:3},
+  {sl:5,distributor:"INDANE",name:"M/S BAMA AGENCY",conn_dom:36722,conn_comm:162},
+  {sl:6,distributor:"HP",name:"M/S JOON HP GAS GRAMIN VITARAK",conn_dom:28203,conn_comm:38},
+  {sl:7,distributor:"INDANE",name:"GADHADHAR GAS AGENCY",conn_dom:0,conn_comm:0},
+  {sl:8,distributor:"INDANE",name:"ANNAPURANA INDANE GRAMIN VITARAK",conn_dom:13262,conn_comm:30},
+  {sl:9,distributor:"INDANE",name:"ASHOK GASS SERVICE",conn_dom:0,conn_comm:0},
+  {sl:10,distributor:"INDANE",name:"LATIKA INDANE GRAMIN VITRAK",conn_dom:0,conn_comm:0},
+  {sl:11,distributor:"INDANE",name:"NISHI GASS AGENCY",conn_dom:3350,conn_comm:229},
+  {sl:12,distributor:"INDANE",name:"CHANDARDING INDANE GRAMIN VITRAK",conn_dom:9262,conn_comm:20},
+  {sl:13,distributor:"INDANE",name:"MS INDU INDANE GRAMIN VITRAK",conn_dom:41457,conn_comm:47},
+  {sl:14,distributor:"INDANE",name:"MAHAMAYA GASS AGENCY",conn_dom:30847,conn_comm:242},
+  {sl:15,distributor:"INDANE",name:"SAPATGRAM INDANE",conn_dom:19758,conn_comm:142},
+  {sl:16,distributor:"HP",name:"SHRI GANPATI HP GASS GRAMIN VITRAK",conn_dom:0,conn_comm:0}
+];
+
+// ── HELPERS ──
+const n = v => v || 0;
+const fmtN = v => v ? v.toLocaleString('en-IN') : '<span class="zero">—</span>';
+const fmtD = d => { if(!d) return ''; const [y,m,dy]=d.split('-'); const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return `${dy} ${mo[+m-1]} ${y}`; };
+
+function getSeedData() {
+  return {"2026-03-13":[
+    {op_dom:285,op_comm:5,rcvd_dom:0,rcvd_comm:0,sale_dom:62,sale_comm:2,cl_dom:223,cl_comm:3},
+    {op_dom:0,op_comm:0,rcvd_dom:0,rcvd_comm:0,sale_dom:0,sale_comm:0,cl_dom:0,cl_comm:0},
+    {op_dom:140,op_comm:77,rcvd_dom:867,rcvd_comm:0,sale_dom:761,sale_comm:16,cl_dom:246,cl_comm:61},
+    {op_dom:0,op_comm:0,rcvd_dom:0,rcvd_comm:0,sale_dom:0,sale_comm:0,cl_dom:0,cl_comm:0},
+    {op_dom:0,op_comm:0,rcvd_dom:0,rcvd_comm:0,sale_dom:0,sale_comm:0,cl_dom:0,cl_comm:0},
+    {op_dom:448,op_comm:3,rcvd_dom:0,rcvd_comm:0,sale_dom:200,sale_comm:0,cl_dom:248,cl_comm:3},
+    {op_dom:27,op_comm:116,rcvd_dom:525,rcvd_comm:0,sale_dom:0,sale_comm:0,cl_dom:0,cl_comm:0},
+    {op_dom:332,op_comm:85,rcvd_dom:0,rcvd_comm:0,sale_dom:42,sale_comm:5,cl_dom:290,cl_comm:80},
+    {op_dom:684,op_comm:4,rcvd_dom:0,rcvd_comm:0,sale_dom:0,sale_comm:0,cl_dom:0,cl_comm:0},
+    {op_dom:397,op_comm:77,rcvd_dom:342,rcvd_comm:0,sale_dom:306,sale_comm:23,cl_dom:433,cl_comm:57},
+    {op_dom:762,op_comm:1,rcvd_dom:324,rcvd_comm:0,sale_dom:215,sale_comm:0,cl_dom:871,cl_comm:1},
+    {op_dom:300,op_comm:6,rcvd_dom:0,rcvd_comm:0,sale_dom:206,sale_comm:6,cl_dom:94,cl_comm:0},
+    {op_dom:120,op_comm:47,rcvd_dom:360,rcvd_comm:0,sale_dom:341,sale_comm:7,cl_dom:139,cl_comm:40},
+    {op_dom:244,op_comm:200,rcvd_dom:0,rcvd_comm:0,sale_dom:0,sale_comm:0,cl_dom:244,cl_comm:300},
+    {op_dom:747,op_comm:0,rcvd_dom:0,rcvd_comm:0,sale_dom:177,sale_comm:0,cl_dom:570,cl_comm:0},
+    {op_dom:274,op_comm:4,rcvd_dom:0,rcvd_comm:0,sale_dom:0,sale_comm:0,cl_dom:0,cl_comm:0}
+  ]};
+}
+
+// ── DATA UPDATE HANDLER ──
+function onDataUpdate() {
+  populateAllPickers();
+  renderDashboard();
+  if(document.getElementById('page-history').classList.contains('active')) renderHistory();
+}
+
+function allDates() { return Object.keys(allData).sort(); }
+function latestDate() { const d=allDates(); return d.length ? d[d.length-1] : null; }
+
+function populatePicker(id, selectedVal) {
+  const dates = allDates().slice().reverse();
+  const el = document.getElementById(id);
+  if(!el) return;
+  const cur = selectedVal || el.value;
+  el.innerHTML = dates.length ? dates.map(d=>`<option value="${d}">${fmtD(d)}</option>`).join('') : '<option value="">No data yet</option>';
+  if(cur && dates.includes(cur)) el.value = cur;
+}
+function populateAllPickers() {
+  const latest = latestDate();
+  populatePicker('dash-date', latest);
+  populatePicker('export-date1', latest);
+  populatePicker('export-date2', latest);
+}
+
+// ── NAV ──
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  if(id==='dashboard') renderDashboard();
+  if(id==='history') renderHistory();
+  if(id==='export') populateAllPickers();
+  if(id==='entry') updateEntryTimeNotice();
+}
+
+// ── CLOCK ──
+function updateClock() {
+  const now=new Date();
+  document.getElementById('live-clock').textContent=now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
+}
+setInterval(updateClock,1000); updateClock();
+
+// ── DASHBOARD ──
+function renderDashboard() {
+  const date = document.getElementById('dash-date').value;
+  if(!date || !allData[date]) {
+    document.getElementById('stat-grid').innerHTML='<div style="color:var(--text2);font-size:13px;grid-column:1/-1">No data for selected date.</div>';
+    document.getElementById('dash-tbody').innerHTML='<tr><td colspan="15" style="text-align:center;padding:24px;color:var(--text2)">No data recorded yet. Use Daily Entry to add today\'s return.</td></tr>';
+    renderCharts([]);
+    return;
+  }
+  const rows = allData[date];
+  let totOD=0,totOC=0,totRD=0,totRC=0,totSD=0,totSC=0,totCD=0,totCC=0;
+  rows.forEach(r=>{ totOD+=n(r.op_dom);totOC+=n(r.op_comm);totRD+=n(r.rcvd_dom);totRC+=n(r.rcvd_comm);totSD+=n(r.sale_dom);totSC+=n(r.sale_comm);totCD+=n(r.cl_dom);totCC+=n(r.cl_comm); });
+
+  const totalConnDom = AGENCIES.reduce((a,ag)=>a+ag.conn_dom,0);
+  const totalConnComm = AGENCIES.reduce((a,ag)=>a+ag.conn_comm,0);
+  const active = rows.filter(r=>n(r.sale_dom)+n(r.sale_comm)>0).length;
+
+  document.getElementById('stat-grid').innerHTML=`
+    <div class="stat-card"><div class="stat-label">Total Connections</div><div class="stat-value">${(totalConnDom+totalConnComm).toLocaleString('en-IN')}</div><div class="stat-detail">${totalConnDom.toLocaleString('en-IN')} Dom · ${totalConnComm.toLocaleString('en-IN')} Comm</div></div>
+    <div class="stat-card green"><div class="stat-label">Total Sales</div><div class="stat-value">${(totSD+totSC).toLocaleString('en-IN')}</div><div class="stat-detail">${totSD.toLocaleString('en-IN')} Dom · ${totSC.toLocaleString('en-IN')} Comm</div></div>
+    <div class="stat-card amber"><div class="stat-label">Cylinders Received</div><div class="stat-value">${(totRD+totRC).toLocaleString('en-IN')}</div><div class="stat-detail">${totRD.toLocaleString('en-IN')} Dom · ${totRC.toLocaleString('en-IN')} Comm</div></div>
+    <div class="stat-card"><div class="stat-label">Closing Stock</div><div class="stat-value">${(totCD+totCC).toLocaleString('en-IN')}</div><div class="stat-detail">${totCD.toLocaleString('en-IN')} Dom · ${totCC.toLocaleString('en-IN')} Comm</div></div>
+    <div class="stat-card"><div class="stat-label">Opening Stock</div><div class="stat-value">${(totOD+totOC).toLocaleString('en-IN')}</div><div class="stat-detail">Start of ${fmtD(date)}</div></div>
+    <div class="stat-card red"><div class="stat-label">Active Agencies</div><div class="stat-value">${active}<span style="font-size:15px;color:var(--text2)"> / 16</span></div><div class="stat-detail">Reported sales today</div></div>
+  `;
+
+  // Table body
+  let tbody='';
+  rows.forEach((r,i)=>{
+    const ag=AGENCIES[i];
+    const totD=n(r.op_dom)+n(r.rcvd_dom), totC=n(r.op_comm)+n(r.rcvd_comm);
+    tbody+=`<tr>
+      <td>${ag.sl}</td>
+      <td class="left"><span class="badge badge-${ag.distributor.toLowerCase()}">${ag.distributor}</span></td>
+      <td class="left"><div class="agency-name">${ag.name}</div></td>
+      <td>${ag.conn_dom?ag.conn_dom.toLocaleString('en-IN'):'<span class="zero">—</span>'}</td>
+      <td>${ag.conn_comm?ag.conn_comm.toLocaleString('en-IN'):'<span class="zero">—</span>'}</td>
+      <td>${fmtN(n(r.op_dom))}</td><td>${fmtN(n(r.op_comm))}</td>
+      <td>${fmtN(n(r.rcvd_dom))}</td><td>${fmtN(n(r.rcvd_comm))}</td>
+      <td>${fmtN(totD)}</td><td>${fmtN(totC)}</td>
+      <td style="color:var(--amber)">${fmtN(n(r.sale_dom))}</td><td style="color:var(--amber)">${fmtN(n(r.sale_comm))}</td>
+      <td>${fmtN(n(r.cl_dom))}</td><td>${fmtN(n(r.cl_comm))}</td>
+    </tr>`;
+  });
+  document.getElementById('dash-tbody').innerHTML=tbody;
+  document.getElementById('dash-tfoot').innerHTML=`
+    <td class="left" colspan="3">DISTRICT TOTAL</td>
+    <td>${totalConnDom.toLocaleString('en-IN')}</td><td>${totalConnComm.toLocaleString('en-IN')}</td>
+    <td>${totOD.toLocaleString('en-IN')}</td><td>${totOC.toLocaleString('en-IN')}</td>
+    <td>${totRD.toLocaleString('en-IN')}</td><td>${totRC.toLocaleString('en-IN')}</td>
+    <td>${(totOD+totRD).toLocaleString('en-IN')}</td><td>${(totOC+totRC).toLocaleString('en-IN')}</td>
+    <td>${totSD.toLocaleString('en-IN')}</td><td>${totSC.toLocaleString('en-IN')}</td>
+    <td>${totCD.toLocaleString('en-IN')}</td><td>${totCC.toLocaleString('en-IN')}</td>
+  `;
+
+  renderCharts(allDates());
+}
+
+// ── CHARTS ──
+const CHART_OPTS = {
+  responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{labels:{color:'#8fa3b8',font:{size:11,family:'IBM Plex Sans'},boxWidth:12,padding:16}},tooltip:{backgroundColor:'#132236',borderColor:'#2a4a68',borderWidth:1,titleColor:'#e8edf2',bodyColor:'#8fa3b8',padding:10}},
+  scales:{x:{ticks:{color:'#5a7490',font:{size:10}},grid:{color:'#1e344920'}},y:{ticks:{color:'#5a7490',font:{size:10}},grid:{color:'#1e344930'}}}
+};
+
+function renderCharts(dates) {
+  const labels = dates.map(d=>fmtD(d));
+  const saleDom = dates.map(d=>allData[d]?allData[d].reduce((a,r)=>a+n(r.sale_dom),0):0);
+  const saleComm = dates.map(d=>allData[d]?allData[d].reduce((a,r)=>a+n(r.sale_comm),0):0);
+  const opDom = dates.map(d=>allData[d]?allData[d].reduce((a,r)=>a+n(r.op_dom),0):0);
+  const rcvdDom = dates.map(d=>allData[d]?allData[d].reduce((a,r)=>a+n(r.rcvd_dom),0):0);
+  const clDom = dates.map(d=>allData[d]?allData[d].reduce((a,r)=>a+n(r.cl_dom),0):0);
+
+  // Trend chart
+  const ctx1 = document.getElementById('chart-trend').getContext('2d');
+  if(charTrend) charTrend.destroy();
+  charTrend = new Chart(ctx1,{type:'line',data:{labels,datasets:[
+    {label:'Domestic Sales',data:saleDom,borderColor:'#00c9a7',backgroundColor:'rgba(0,201,167,.1)',tension:.35,fill:true,pointBackgroundColor:'#00c9a7',pointRadius:4},
+    {label:'Commercial Sales',data:saleComm,borderColor:'#f5a623',backgroundColor:'rgba(245,166,35,.08)',tension:.35,fill:true,pointBackgroundColor:'#f5a623',pointRadius:4}
+  ]},options:{...CHART_OPTS,plugins:{...CHART_OPTS.plugins}}});
+
+  // Stock movement chart
+  const ctx2 = document.getElementById('chart-stock').getContext('2d');
+  if(chartStock) chartStock.destroy();
+  chartStock = new Chart(ctx2,{type:'bar',data:{labels,datasets:[
+    {label:'Opening Stock (Dom)',data:opDom,backgroundColor:'rgba(0,201,167,.25)',borderColor:'#00c9a7',borderWidth:1.5},
+    {label:'Received (Dom)',data:rcvdDom,backgroundColor:'rgba(245,166,35,.25)',borderColor:'#f5a623',borderWidth:1.5},
+    {label:'Closing Stock (Dom)',data:clDom,backgroundColor:'rgba(52,152,219,.25)',borderColor:'#3498db',borderWidth:1.5}
+  ]},options:{...CHART_OPTS,plugins:{...CHART_OPTS.plugins},scales:{...CHART_OPTS.scales,x:{...CHART_OPTS.scales.x,stacked:false}}}});
+}
+
+function refreshAll() { if(db) { toast('Refreshing…',''); } else { onDataUpdate(); toast('Refreshed (offline mode)',''); } }
+setInterval(()=>{ if(document.getElementById('page-dashboard').classList.contains('active')) renderDashboard(); }, 60000);
+
+// ── PIN MODAL ──
+let pinBuffer = '';
+function showPinModal() { pinBuffer=''; updatePinDots(); document.getElementById('pin-error').textContent=''; document.getElementById('pin-modal').style.display='flex'; }
+function closePinModal() { document.getElementById('pin-modal').style.display='none'; }
+function pinKey(k) {
+  if(pinBuffer.length>=4) return;
+  pinBuffer+=k; updatePinDots();
+  if(pinBuffer.length===4) setTimeout(checkPin,120);
+}
+function pinBack() { pinBuffer=pinBuffer.slice(0,-1); updatePinDots(); document.getElementById('pin-error').textContent=''; }
+function pinClear() { pinBuffer=''; updatePinDots(); document.getElementById('pin-error').textContent=''; }
+function updatePinDots() { for(let i=0;i<4;i++) document.getElementById('pd'+i).className='pin-dot'+(i<pinBuffer.length?' filled':''); }
+function checkPin() {
+  if(pinBuffer===OPERATOR_PIN) {
+    closePinModal();
+    document.getElementById('entry-locked').style.display='none';
+    document.getElementById('entry-unlocked').style.display='block';
+    const today=new Date().toISOString().split('T')[0];
+    document.getElementById('entry-date').value=today;
+    document.getElementById('entry-date').max=today;
+    updateEntryTimeNotice();
+    toast('✓ Access granted','success');
+  } else {
+    pinBuffer=''; updatePinDots();
+    document.getElementById('pin-error').textContent='Incorrect PIN. Try again.';
+    document.getElementById('pin-modal').querySelector('.modal').style.animation='shake .3s';
+    setTimeout(()=>document.getElementById('pin-modal').querySelector('.modal').style.animation='',400);
+  }
+}
+function lockEntry() { document.getElementById('entry-locked').style.display='block'; document.getElementById('entry-unlocked').style.display='none'; document.getElementById('entry-form-wrap').innerHTML=''; }
+
+// ── ENTRY TIME NOTICE ──
+function updateEntryTimeNotice() {
+  const now=new Date(), h=now.getHours();
+  const el=document.getElementById('entry-time-notice');
+  if(!el) return;
+  if(h<17) el.textContent=`Data entry opens at 5:00 PM — current time is ${now.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',hour12:true})}`;
+  else el.textContent=`Entry window open — data is saved live to Firebase`;
+}
+
+// ── LOAD ENTRY FORM ──
+function loadEntryForm() {
+  const date=document.getElementById('entry-date').value;
+  if(!date) { toast('Select a date first',''); return; }
+  const existing=allData[date]||null;
+  const prevDate=allDates().filter(d=>d<date).pop();
+  const prevRows=prevDate?allData[prevDate]:null;
+  const noticeEl=document.getElementById('entry-notice');
+  const now=new Date(),h=now.getHours(),today=new Date().toISOString().split('T')[0];
+  let notices='';
+  if(date===today&&h<17) notices+=`<div class="notice notice-warn"><span class="notice-icon">⏰</span>Entry window opens at 5:00 PM. You may pre-fill but save after 5 PM.</div>`;
+  if(existing) notices+=`<div class="notice notice-info"><span class="notice-icon">ℹ️</span>Data exists for ${fmtD(date)}. You are editing an existing return.</div>`;
+  else if(prevRows) notices+=`<div class="notice notice-success"><span class="notice-icon">✅</span>Opening stock pre-filled from ${fmtD(prevDate)} closing stock.</div>`;
+  noticeEl.innerHTML=notices;
+
+  let html=`<div class="table-card"><div class="table-scroll"><table>
+    <thead>
+      <tr>
+        <th rowspan="2" style="width:32px">Sl.</th>
+        <th rowspan="2" class="left" style="min-width:180px">Agency</th>
+        <th colspan="2">Opening Stock</th>
+        <th colspan="2">Received</th>
+        <th colspan="2">Total (auto)</th>
+        <th colspan="2">Sales</th>
+        <th colspan="2">Closing (auto)</th>
+      </tr>
+      <tr><th>Dom</th><th>Comm</th><th>Dom</th><th>Comm</th><th>Dom</th><th>Comm</th><th>Dom</th><th>Comm</th><th>Dom</th><th>Comm</th></tr>
+    </thead><tbody>`;
+
+  AGENCIES.forEach((ag,i)=>{
+    let r;
+    if(existing) r=existing[i];
+    else if(prevRows) r={op_dom:n(prevRows[i].cl_dom),op_comm:n(prevRows[i].cl_comm),rcvd_dom:0,rcvd_comm:0,sale_dom:0,sale_comm:0,cl_dom:n(prevRows[i].cl_dom),cl_comm:n(prevRows[i].cl_comm)};
+    else r={op_dom:0,op_comm:0,rcvd_dom:0,rcvd_comm:0,sale_dom:0,sale_comm:0,cl_dom:0,cl_comm:0};
+    html+=`<tr>
+      <td>${ag.sl}</td>
+      <td class="left"><div style="font-weight:500;font-size:12px">${ag.name}</div><span class="badge badge-${ag.distributor.toLowerCase()}" style="margin-top:3px">${ag.distributor}</span></td>
+      <td><input class="cell-input" type="number" min="0" id="op_dom_${i}" value="${n(r.op_dom)}" oninput="recalc(${i})"></td>
+      <td><input class="cell-input" type="number" min="0" id="op_comm_${i}" value="${n(r.op_comm)}" oninput="recalc(${i})"></td>
+      <td><input class="cell-input" type="number" min="0" id="rcvd_dom_${i}" value="${n(r.rcvd_dom)}" oninput="recalc(${i})"></td>
+      <td><input class="cell-input" type="number" min="0" id="rcvd_comm_${i}" value="${n(r.rcvd_comm)}" oninput="recalc(${i})"></td>
+      <td><input class="cell-input computed" type="number" id="tot_dom_${i}" readonly></td>
+      <td><input class="cell-input computed" type="number" id="tot_comm_${i}" readonly></td>
+      <td><input class="cell-input sale" type="number" min="0" id="sale_dom_${i}" value="${n(r.sale_dom)}" oninput="recalc(${i})"></td>
+      <td><input class="cell-input sale" type="number" min="0" id="sale_comm_${i}" value="${n(r.sale_comm)}" oninput="recalc(${i})"></td>
+      <td><input class="cell-input computed" type="number" id="cl_dom_${i}" readonly></td>
+      <td><input class="cell-input computed" type="number" id="cl_comm_${i}" readonly></td>
+    </tr>`;
+  });
+
+  html+=`</tbody><tfoot><tr class="totals-row">
+    <td colspan="2" class="left" style="color:var(--text2);font-family:var(--font);font-size:12px">TOTALS</td>
+    <td id="t_op_dom">0</td><td id="t_op_comm">0</td>
+    <td id="t_rcvd_dom">0</td><td id="t_rcvd_comm">0</td>
+    <td id="t_tot_dom">0</td><td id="t_tot_comm">0</td>
+    <td id="t_sale_dom">0</td><td id="t_sale_comm">0</td>
+    <td id="t_cl_dom">0</td><td id="t_cl_comm">0</td>
+  </tr></tfoot></table></div></div>
+  <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+    <button class="btn btn-teal" onclick="saveEntry()">💾 Save to Firebase</button>
+    <button class="btn btn-outline" onclick="clearEntryForm()">✖ Clear</button>
+  </div>`;
+
+  document.getElementById('entry-form-wrap').innerHTML=html;
+  AGENCIES.forEach((_,i)=>recalc(i));
+}
+
+function recalc(i) {
+  const v=id=>+document.getElementById(id)?.value||0;
+  const td=v(`op_dom_${i}`)+v(`rcvd_dom_${i}`), tc=v(`op_comm_${i}`)+v(`rcvd_comm_${i}`);
+  document.getElementById(`tot_dom_${i}`).value=td;
+  document.getElementById(`tot_comm_${i}`).value=tc;
+  document.getElementById(`cl_dom_${i}`).value=Math.max(0,td-v(`sale_dom_${i}`));
+  document.getElementById(`cl_comm_${i}`).value=Math.max(0,tc-v(`sale_comm_${i}`));
+  recalcTotals();
+}
+
+function recalcTotals() {
+  const fields=['op_dom','op_comm','rcvd_dom','rcvd_comm','sale_dom','sale_comm','cl_dom','cl_comm'];
+  fields.forEach(f=>{ const s=AGENCIES.reduce((_,__,i)=>_+(+document.getElementById(`${f}_${i}`)?.value||0),0); const el=document.getElementById(`t_${f}`); if(el) el.textContent=s.toLocaleString('en-IN'); });
+  const td=AGENCIES.reduce((_,__,i)=>_+(+document.getElementById(`tot_dom_${i}`)?.value||0),0);
+  const tc=AGENCIES.reduce((_,__,i)=>_+(+document.getElementById(`tot_comm_${i}`)?.value||0),0);
+  const etd=document.getElementById('t_tot_dom'), etc=document.getElementById('t_tot_comm');
+  if(etd) etd.textContent=td.toLocaleString('en-IN');
+  if(etc) etc.textContent=tc.toLocaleString('en-IN');
+}
+
+function saveEntry() {
+  const date=document.getElementById('entry-date').value;
+  if(!date) { toast('No date selected',''); return; }
+  const rows=AGENCIES.map((_,i)=>{
+    const v=id=>+document.getElementById(id)?.value||0;
+    return {op_dom:v(`op_dom_${i}`),op_comm:v(`op_comm_${i}`),rcvd_dom:v(`rcvd_dom_${i}`),rcvd_comm:v(`rcvd_comm_${i}`),sale_dom:v(`sale_dom_${i}`),sale_comm:v(`sale_comm_${i}`),cl_dom:v(`cl_dom_${i}`),cl_comm:v(`cl_comm_${i}`)};
+  });
+  if(db) {
+    db.ref('lpg_returns/'+date).set(rows).then(()=>toast('✓ Saved to Firebase for '+fmtD(date),'success')).catch(e=>toast('Save failed: '+e.message,'error'));
+  } else {
+    allData[date]=rows; onDataUpdate();
+    toast('✓ Saved (offline mode)','success');
+  }
+  document.getElementById('entry-notice').innerHTML=`<div class="notice notice-success"><span class="notice-icon">✅</span>Return for ${fmtD(date)} saved successfully.</div>`;
+}
+
+function clearEntryForm() { AGENCIES.forEach((_,i)=>{ ['op_dom','op_comm','rcvd_dom','rcvd_comm','sale_dom','sale_comm'].forEach(f=>{ const el=document.getElementById(`${f}_${i}`); if(el&&!el.readOnly) el.value=0; }); recalc(i); }); }
+
+// ── HISTORY ──
+function renderHistory() {
+  const dates=allDates().slice().reverse();
+  const list=document.getElementById('history-list');
+  if(!dates.length) { list.innerHTML='<div class="notice notice-warn"><span class="notice-icon">ℹ️</span>No data recorded yet.</div>'; return; }
+  list.innerHTML=dates.map(date=>{
+    const rows=allData[date];
+    const totSale=rows.reduce((a,r)=>a+n(r.sale_dom)+n(r.sale_comm),0);
+    const totCl=rows.reduce((a,r)=>a+n(r.cl_dom)+n(r.cl_comm),0);
+    const totRcvd=rows.reduce((a,r)=>a+n(r.rcvd_dom)+n(r.rcvd_comm),0);
+    const active=rows.filter(r=>n(r.sale_dom)+n(r.sale_comm)>0).length;
+    return `<div class="history-card">
+      <div class="history-date">${fmtD(date)}</div>
+      <div class="history-meta">
+        <div class="hm-item">Sales <span>${totSale.toLocaleString('en-IN')}</span></div>
+        <div class="hm-item">Received <span>${totRcvd.toLocaleString('en-IN')}</span></div>
+        <div class="hm-item">Closing <span>${totCl.toLocaleString('en-IN')}</span></div>
+        <div class="hm-item">Active <span>${active}/16</span></div>
+      </div>
+      <div class="history-actions">
+        <button class="btn btn-outline btn-sm" onclick="viewDate('${date}')">View</button>
+        <button class="btn btn-red btn-sm" onclick="deleteDate('${date}')">Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function viewDate(date) {
+  document.getElementById('dash-date').value=date;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-dashboard').classList.add('active');
+  document.querySelector('.nav-btn').classList.add('active');
+  renderDashboard();
+}
+
+function deleteDate(date) {
+  if(!confirm('Delete all data for '+fmtD(date)+'? This cannot be undone.')) return;
+  if(db) {
+    db.ref('lpg_returns/'+date).remove().then(()=>toast('Deleted '+fmtD(date),''));
+  } else {
+    delete allData[date]; onDataUpdate(); toast('Deleted (offline)','');
+  }
+  renderHistory();
+}
+
+// ── EXPORT ──
+function buildRows(date) {
+  const rows=allData[date]; if(!rows) return [];
+  const h=['Date','Sl','Distributor','Agency Name','Dom Connections','Comm Connections','Op Dom','Op Comm','Rcvd Dom','Rcvd Comm','Total Dom','Total Comm','Sale Dom','Sale Comm','Closing Dom','Closing Comm'];
+  return [h,...rows.map((r,i)=>{ const ag=AGENCIES[i]; return [date,ag.sl,ag.distributor,ag.name,ag.conn_dom,ag.conn_comm,n(r.op_dom),n(r.op_comm),n(r.rcvd_dom),n(r.rcvd_comm),n(r.op_dom)+n(r.rcvd_dom),n(r.op_comm)+n(r.rcvd_comm),n(r.sale_dom),n(r.sale_comm),n(r.cl_dom),n(r.cl_comm)]; })];
+}
+function dlCSV(rows,name) { const csv=rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n'); const a=Object.assign(document.createElement('a'),{href:URL.createObjectURL(new Blob([csv],{type:'text/csv'})),download:name}); a.click(); toast('Downloaded '+name,'success'); }
+function exportCSV() { const d=document.getElementById('export-date1').value; if(!d) return; dlCSV(buildRows(d),'LPG_Return_'+d+'.csv'); }
+function exportAllCSV() { const dates=allDates(); let all=[]; dates.forEach((d,i)=>{ const r=buildRows(d); if(i===0) all.push(r[0]); r.slice(1).forEach(row=>all.push(row)); }); dlCSV(all,'LPG_Return_ALL.csv'); }
+function copyTSV() { const d=document.getElementById('export-date2').value; if(!d) return; navigator.clipboard.writeText(buildRows(d).map(r=>r.join('\t')).join('\n')).then(()=>toast('Copied! Paste into Excel with Ctrl+V','success')).catch(()=>toast('Copy failed','error')); }
+
+// ── TOAST ──
+function toast(msg, type) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=(type?'show '+type:'show');
+  clearTimeout(t._timer);
+  t._timer=setTimeout(()=>t.className='',2800);
+}
+
+// ── NOTICE ──
+function showNotice(id, type, msg) { const el=document.getElementById(id); if(el) el.innerHTML=`<div class="notice notice-${type}"><span class="notice-icon">${{info:'ℹ️',warn:'⚠️',success:'✅',error:'❌'}[type]}</span>${msg}</div>`; }
+
+// ── SHAKE ANIMATION ──
+const shakeStyle=document.createElement('style');
+shakeStyle.textContent='@keyframes shake{0%,100%{transform:none}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}';
+document.head.appendChild(shakeStyle);
+
+// ── INIT ──
+document.getElementById('entry-date').max=new Date().toISOString().split('T')[0];
+</script>
+</body>
+</html>
