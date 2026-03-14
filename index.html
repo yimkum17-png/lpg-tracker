@@ -505,10 +505,10 @@ function renderDashboard() {
 
   document.getElementById('stat-grid').innerHTML=`
     <div class="stat-card"><div class="stat-label">Total Connections</div><div class="stat-value">${(totalConnDom+totalConnComm).toLocaleString('en-IN')}</div><div class="stat-detail">${totalConnDom.toLocaleString('en-IN')} Dom · ${totalConnComm.toLocaleString('en-IN')} Comm</div></div>
-    <div class="stat-card green"><div class="stat-label">Total Sales</div><div class="stat-value">${(totSD+totSC).toLocaleString('en-IN')}</div><div class="stat-detail">${totSD.toLocaleString('en-IN')} Dom · ${totSC.toLocaleString('en-IN')} Comm</div></div>
+    <div class="stat-card green"><div class="stat-label">Total Sales Today</div><div class="stat-value">${(totSD+totSC).toLocaleString('en-IN')}</div><div class="stat-detail">${totSD.toLocaleString('en-IN')} Dom · ${totSC.toLocaleString('en-IN')} Comm</div></div>
     <div class="stat-card amber"><div class="stat-label">Cylinders Received</div><div class="stat-value">${(totRD+totRC).toLocaleString('en-IN')}</div><div class="stat-detail">${totRD.toLocaleString('en-IN')} Dom · ${totRC.toLocaleString('en-IN')} Comm</div></div>
-    <div class="stat-card"><div class="stat-label">Closing Stock</div><div class="stat-value">${(totCD+totCC).toLocaleString('en-IN')}</div><div class="stat-detail">${totCD.toLocaleString('en-IN')} Dom · ${totCC.toLocaleString('en-IN')} Comm</div></div>
     <div class="stat-card"><div class="stat-label">Opening Stock</div><div class="stat-value">${(totOD+totOC).toLocaleString('en-IN')}</div><div class="stat-detail">Start of ${fmtD(date)}</div></div>
+    <div class="stat-card"><div class="stat-label">Closing Stock</div><div class="stat-value">${(totCD+totCC).toLocaleString('en-IN')}</div><div class="stat-detail">${totCD.toLocaleString('en-IN')} Dom · ${totCC.toLocaleString('en-IN')} Comm</div></div>
     <div class="stat-card red"><div class="stat-label">Active Agencies</div><div class="stat-value">${active}<span style="font-size:15px;color:var(--text2)"> / 16</span></div><div class="stat-detail">Reported sales today</div></div>
   `;
 
@@ -573,8 +573,8 @@ function renderCharts(dates) {
   chartStock = new Chart(ctx2,{type:'bar',data:{labels,datasets:[
     {label:'Opening Stock (Dom)',data:opDom,backgroundColor:'rgba(0,201,167,.25)',borderColor:'#00c9a7',borderWidth:1.5},
     {label:'Received (Dom)',data:rcvdDom,backgroundColor:'rgba(245,166,35,.25)',borderColor:'#f5a623',borderWidth:1.5},
-    {label:'Closing Stock (Dom)',data:clDom,backgroundColor:'rgba(52,152,219,.25)',borderColor:'#3498db',borderWidth:1.5},
-    {label:'Sales (Dom)',data:saleDom,backgroundColor:'rgba(231,76,60,.25)',borderColor:'#e74c3c',borderWidth:1.5}
+    {label:'Sales (Dom)',data:saleDom,backgroundColor:'rgba(231,76,60,.25)',borderColor:'#e74c3c',borderWidth:1.5},
+    {label:'Closing Stock (Dom)',data:clDom,backgroundColor:'rgba(52,152,219,.25)',borderColor:'#3498db',borderWidth:1.5}
   ]},options:{...CHART_OPTS,plugins:{...CHART_OPTS.plugins},scales:{...CHART_OPTS.scales,x:{...CHART_OPTS.scales.x,stacked:false}}}});
 }
 
