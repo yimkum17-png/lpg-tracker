@@ -726,7 +726,7 @@ function loadEntryForm() {
   AGENCIES.forEach((ag,i)=>{
     let r;
     if(existing) r=existing[i];
-    else if(prevRows) r={op_dom:n(prevRows[i].cl_dom),op_comm:n(prevRows[i].cl_comm),rcvd_dom:0,rcvd_comm:0,sale_dom:0,sale_comm:0,cl_dom:n(prevRows[i].cl_dom),cl_comm:n(prevRows[i].cl_comm)};
+    else if(prevRows && prevRows[i]) r={op_dom:n(prevRows[i].cl_dom),op_comm:n(prevRows[i].cl_comm),rcvd_dom:0,rcvd_comm:0,sale_dom:0,sale_comm:0,cl_dom:n(prevRows[i].cl_dom),cl_comm:n(prevRows[i].cl_comm)};
     else r={op_dom:0,op_comm:0,rcvd_dom:0,rcvd_comm:0,sale_dom:0,sale_comm:0,cl_dom:0,cl_comm:0};
     html+=`<tr>
       <td>${ag.sl}</td>
