@@ -587,8 +587,8 @@ function renderDashboard() {
 
   // Table body
   let tbody='';
-  rows.forEach((r,i)=>{
-    const ag=AGENCIES[i];
+  AGENCIES.forEach((ag,i)=>{
+    const r=rows[i]||{op_dom:0,op_comm:0,rcvd_dom:0,rcvd_comm:0,sale_dom:0,sale_comm:0,cl_dom:0,cl_comm:0};
     const totD=n(r.op_dom)+n(r.rcvd_dom), totC=n(r.op_comm)+n(r.rcvd_comm);
     tbody+=`<tr>
       <td>${ag.sl}</td>
