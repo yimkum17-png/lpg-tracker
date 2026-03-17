@@ -228,6 +228,12 @@ tfoot td.left{text-align:left;color:var(--text2);font-family:var(--font)}
 .comm-monthly-toggle{background:none;border:1px solid #1e3449;color:#5a7490;font-size:11px;padding:5px 12px;border-radius:5px;cursor:pointer;margin-bottom:12px}
 .comm-monthly-toggle:hover{color:#4da6ff;border-color:#4da6ff}
 .comm-monthly-wrap{overflow:hidden;transition:max-height .3s}
+/* ── COMM AGENCY GROUP HEADERS ── */
+.comm-group-hdr td{background:#0d2035;color:#4da6ff;font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;cursor:pointer;border-top:2px solid #1a3a54;border-bottom:1px solid #1e3449;user-select:none}
+.comm-group-hdr:hover td{background:#0f2a45}
+.comm-group-hdr .cg-arrow{display:inline-block;transition:transform .2s;margin-right:6px;font-style:normal}
+.comm-group-hdr.collapsed .cg-arrow{transform:rotate(-90deg)}
+.comm-group-hdr .cg-count{font-size:10px;color:#5a7490;font-weight:400;margin-left:8px}
 
 </style>
 </head>
@@ -920,32 +926,70 @@ window.updateCommDashCards = function(){
 };
 
 window.renderCommAgencyTable = function(){
-  var tbody=document.getElementById("comm-agency-tbody"); if(!tbody) return;
+  var tbody=document.getElementById("comm-agency-tbody");
+  if(!tbody) return;
   var date=(document.getElementById("dash-date")||{}).value||"";
-  var mon=window.commData.monthly||{}; var stk=window.commData.stock||{}; var bkgs=window.commData.bookings||{};
+  var mon=window.commData.monthly||{};
+  var stk=window.commData.stock||{};
+  var bkgs=window.commData.bookings||{};
   var dates=Object.keys(bkgs).sort();
   var useDate=date&&bkgs[date]?date:(dates.length?dates[dates.length-1]:"");
   var useDateStk=date&&stk[date]?date:(Object.keys(stk).sort().pop()||"");
-  var rows=""; var totDec=0,totJan=0,totFeb=0,totStk=0,totNbt=0,totBtn=0;
-  for(var i=0;i<19;i++){
-    var m=mon[i]||{}; var dec=(m.decH||0)+(m.decE||0)+(m.decO||0); var jan=(m.janH||0)+(m.janE||0)+(m.janO||0); var feb=(m.febH||0)+(m.febE||0)+(m.febO||0);
-    var s2=useDateStk&&stk[useDateStk]?(stk[useDateStk][i]||0):0;
-    var ag=useDate&&bkgs[useDate]?(bkgs[useDate][i]||{}):{};var nbt=ag.new||0;var btn=ag.cum||0;
-    totDec+=dec;totJan+=jan;totFeb+=feb;totStk+=s2;totNbt+=nbt;totBtn+=btn;
-    rows+="<tr><td>"+(i+1)+"</td><td>"+AGENCIES[i]+"</td>"
-      +"<td class='"+(dec?"highlight-y":"")+"'>"+ (!dec?"&mdash;":dec)+"</td>"
-      +"<td class='"+(jan?"highlight-y":"")+"'>"+ (!jan?"&mdash;":jan)+"</td>"
-      +"<td class='"+(feb?"highlight-y":"")+"'>"+ (!feb?"&mdash;":feb)+"</td>"
-      +"<td class='"+(s2?"highlight":"")+"'>"+ (!s2?"&mdash;":s2)+"</td>"
-      +"<td class='"+(nbt?"highlight":"")+"'>"+ (!nbt?"&mdash;":nbt)+"</td>"
-      +"<td class='"+(btn?"highlight-y":"")+"'>"+ (!btn?"&mdash;":btn)+"</td></tr>";
-  }
+  var rows="";
+  var totDec=0,totJan=0,totFeb=0,totStk=0,totNbt=0,totBtn=0;
+  var DIST_NAMES=['INDANE','HP','BPCL'];
+  var DIST_INDICES={INDANE:[1,2,3,4,6,7,8,9,10,11,12,13,14,16],HP:[0,5,15,18],BPCL:[17]};
+  DIST_NAMES.forEach(function(dist){
+    var idxList=DIST_INDICES[dist];
+    var grpDec=0,grpJan=0,grpFeb=0,grpStk=0,grpNbt=0,grpBtn=0;
+    idxList.forEach(function(i){
+      var m=mon[i]||{};
+      grpDec+=(m.decH||0)+(m.decE||0)+(m.decO||0);
+      grpJan+=(m.janH||0)+(m.janE||0)+(m.janO||0);
+      grpFeb+=(m.febH||0)+(m.febE||0)+(m.febO||0);
+      grpStk+=useDateStk&&stk[useDateStk]?(stk[useDateStk][i]||0):0;
+      var ag=useDate&&bkgs[useDate]?(bkgs[useDate][i]||{}):{};
+      grpNbt+=ag.new||0;grpBtn+=ag.cum||0;
+    });
+    totDec+=grpDec;totJan+=grpJan;totFeb+=grpFeb;totStk+=grpStk;totNbt+=grpNbt;totBtn+=grpBtn;
+    var collapsed=window._commGroupCollapsed&&window._commGroupCollapsed[dist]?'collapsed':'';
+    var displayStyle=collapsed?'style="display:none"':'';
+    rows+="<tr class='comm-group-hdr "+(collapsed||"")+"' onclick='toggleCommGroup(\""+dist+"\")' data-group='"+dist+"'>";
+    rows+="<td colspan='8'><i class='cg-arrow'>&#9660;</i>"+dist+"<span class='cg-count'>"+idxList.length+" agencies</span></td></tr>";
+    idxList.forEach(function(i){
+      var m=mon[i]||{};
+      var dec=(m.decH||0)+(m.decE||0)+(m.decO||0);
+      var jan=(m.janH||0)+(m.janE||0)+(m.janO||0);
+      var feb=(m.febH||0)+(m.febE||0)+(m.febO||0);
+      var s2=useDateStk&&stk[useDateStk]?(stk[useDateStk][i]||0):0;
+      var ag=useDate&&bkgs[useDate]?(bkgs[useDate][i]||{}):{};
+      var nbt=ag.new||0;var btn=ag.cum||0;
+      rows+="<tr class='comm-agency-row comm-group-"+dist+"' "+displayStyle+"><td>"+(i+1)+"</td><td>"+AGENCIES[i]+"</td>"
+        +"<td class='"+(dec?"highlight-y":"")+"'>"+ (!dec?"&mdash;":dec)+"</td>"
+        +"<td class='"+(jan?"highlight-y":"")+"'>"+ (!jan?"&mdash;":jan)+"</td>"
+        +"<td class='"+(feb?"highlight-y":"")+"'>"+ (!feb?"&mdash;":feb)+"</td>"
+        +"<td class='"+(s2?"highlight":"")+"'>"+ (!s2?"&mdash;":s2)+"</td>"
+        +"<td class='"+(nbt?"highlight":"")+"'>"+ (!nbt?"&mdash;":nbt)+"</td>"
+        +"<td class='"+(btn?"highlight-y":"")+"'>"+ (!btn?"&mdash;":btn)+"</td></tr>";
+    });
+  });
   tbody.innerHTML=rows;
   var ids=["cdf-dec","cdf-jan","cdf-feb","cdf-stock","cdf-nbt","cdf-btn"];
   var vals=[totDec,totJan,totFeb,totStk,totNbt,totBtn];
   ids.forEach(function(id,k){ var e=document.getElementById(id); if(e) e.textContent=vals[k]; });
 };
-
+window.toggleCommGroup = function(dist){
+  window._commGroupCollapsed = window._commGroupCollapsed || {};
+  window._commGroupCollapsed[dist] = !window._commGroupCollapsed[dist];
+  var rows = document.querySelectorAll('.comm-agency-row.comm-group-' + dist);
+  var hdr = document.querySelector('.comm-group-hdr[data-group="' + dist + '"]');
+  var collapsed = window._commGroupCollapsed[dist];
+  rows.forEach(function(r){ r.style.display = collapsed ? 'none' : ''; });
+  if(hdr) {
+    if(collapsed) hdr.classList.add('collapsed');
+    else hdr.classList.remove('collapsed');
+  }
+};
 window.toggleCommDetail = function(){
   var d=document.getElementById("comm-agency-detail"); var btn=document.getElementById("comm-detail-toggle-btn"); if(!d) return;
   var vis=d.style.display!=="none"; d.style.display=vis?"none":"";
