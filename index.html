@@ -232,6 +232,30 @@ tfoot td.left{text-align:left;color:var(--text2);font-family:var(--font)}
 .comm-monthly-toggle{background:none;border:1px solid #1e3449;color:#5a7490;font-size:11px;padding:5px 12px;border-radius:5px;cursor:pointer;margin-bottom:12px}
 .comm-monthly-toggle:hover{color:#4da6ff;border-color:#4da6ff}
 .comm-monthly-wrap{overflow:hidden;transition:max-height .3s}
+/* ── COMM SCHEMATIC TABLE ── */
+.comm-schematic{margin-top:18px;overflow-x:auto}
+.comm-schema-tbl{width:100%;border-collapse:collapse;font-size:11.5px;min-width:900px}
+.comm-schema-tbl th{background:#071626;color:#5a7490;font-weight:700;font-size:10px;letter-spacing:.05em;text-transform:uppercase;padding:8px 8px;text-align:right;border-bottom:2px solid #1e3449;white-space:nowrap}
+.comm-schema-tbl th.left{text-align:left}
+.comm-schema-tbl th.month-hdr{background:#0d2035;color:#4da6ff;font-size:10px;font-weight:700;text-align:center;padding:6px 8px;border-bottom:1px solid #1e3449;letter-spacing:.05em}
+.comm-schema-tbl td{padding:6px 8px;border-bottom:1px solid #0a1e30;color:#c8d8e8;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:11px}
+.comm-schema-tbl td.left{text-align:left;font-family:'IBM Plex Sans',sans-serif;font-size:11.5px;color:#e0ecf8}
+.comm-schema-tbl td.omc-badge{text-align:left;font-family:'IBM Plex Sans',sans-serif}
+.comm-schema-tbl tr:hover td{background:#0a1e30}
+.comm-schema-tbl .grp-hdr td{background:#0d2035;color:#4da6ff;font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:7px 8px;cursor:pointer;border-top:2px solid #1a3a54;border-bottom:1px solid #1e3449}
+.comm-schema-tbl .grp-hdr:hover td{background:#0f2a45}
+.comm-schema-tbl .grp-sub td{background:#071a28;color:#8fa3b8;font-size:10.5px;font-weight:600;border-bottom:1px solid #0d2035;letter-spacing:.04em}
+.comm-schema-tbl .total-row td{background:#071626;color:#e8b84b;font-weight:700;border-top:2px solid #1e3449;font-size:11px}
+.comm-schema-tbl .total-row td.left{color:#e8b84b;font-family:'IBM Plex Mono',monospace}
+.comm-schema-tbl .val-hosp{color:#ff8c69}
+.comm-schema-tbl .val-edu{color:#63b3ed}
+.comm-schema-tbl .val-others{color:#a0c4a0}
+.comm-schema-tbl .val-total{color:#e8b84b;font-weight:700}
+.comm-schema-tbl .val-stock{color:#00d4aa;font-weight:700}
+.comm-schema-tbl .val-zero{color:#2a4a68}
+.comm-schema-legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;font-size:11px;color:#5a7490}
+.comm-schema-legend span{display:flex;align-items:center;gap:5px}
+.comm-schema-legend .dot{width:10px;height:10px;border-radius:2px;display:inline-block}
 /* ── COMM AGENCY GROUP HEADERS ── */
 .comm-group-hdr td{background:#0d2035;color:#4da6ff;font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;cursor:pointer;border-top:2px solid #1a3a54;border-bottom:1px solid #1e3449;user-select:none}
 .comm-group-hdr:hover td{background:#0f2a45}
@@ -311,17 +335,11 @@ tfoot td.left{text-align:left;color:var(--text2);font-family:var(--font)}
       <div class="comm-stat-card"><div class="csc-label">&#128197; Feb 2026 Sales</div><div class="csc-val" id="cds-feb">0</div><div class="csc-sub">19 Kg Comm. (district)</div></div>
     </div>
     <button class="comm-toggle-btn" id="comm-detail-toggle-btn" onclick="toggleCommDetail()">&#9660; Show Agency Detail</button>
-    <div id="comm-agency-detail" style="display:none;overflow-x:auto">
-      <table class="comm-agency-tbl"><thead><tr>
-        <th>#</th><th>Agency</th><th>Dec Total</th><th>Jan Total</th><th>Feb Total</th>
-        <th>Stock Latest</th><th>New Book. Today</th><th>Bookings Till Now</th>
-      </tr></thead>
-      <tbody id="comm-agency-tbody"></tbody>
-      <tfoot><tr class="tfoot-row"><td colspan="2">DISTRICT TOTAL</td>
-        <td id="cdf-dec">0</td><td id="cdf-jan">0</td><td id="cdf-feb">0</td>
-        <td id="cdf-stock">0</td><td id="cdf-nbt">0</td><td id="cdf-btn">0</td>
-      </tr></tfoot></table>
-    </div>
+          <div id="comm-agency-detail" style="display:none">
+            <div class="comm-schematic" id="comm-schematic-wrap">
+              <!-- rendered by renderCommSchematic() -->
+            </div>
+          </div>
   </div>
 </div>
 
@@ -923,6 +941,151 @@ var AGENCIES = ['AGOMANI HP GAS GRAMIN VITARAK','MAHIRA INDIAN GRAMIN VITARAK','
 
 window.commData = window.commData || {};
 
+/* ── COMM STATIC REFERENCE DATA (from official district records) ── */
+var COMM_STATIC = [
+  {sl:1, name:"Agomani HP Gas Gramin Vitarak",       omc:"HPCL",
+   decH:0,decE:1,decO:10,decT:11,  janH:0,janE:1,janO:12,janT:13,  febH:0,febE:1,febO:20,febT:21,  mar26Stk:0},
+  {sl:2, name:"Mahira Indian Gramin Vitarak",         omc:"IOCL",
+   decH:0,decE:0,decO:5,decT:5,    janH:0,janE:0,janO:9,janT:9,    febH:0,febE:0,febO:6,febT:6,    mar26Stk:138},
+  {sl:3, name:"M/S Krishna Gas Service",              omc:"IOCL",
+   decH:0,decE:6,decO:353,decT:359, janH:0,janE:4,janO:305,janT:309, febH:0,febE:6,febO:262,febT:268, mar26Stk:22},
+  {sl:4, name:"Tarangijhar Indane Gramin Vitarak",    omc:"IOCL",
+   decH:0,decE:0,decO:0,decT:0,    janH:0,janE:0,janO:0,janT:0,    febH:0,febE:0,febO:1,febT:1,    mar26Stk:39},
+  {sl:5, name:"M/S Bama Agency",                     omc:"IOCL",
+   decH:0,decE:3,decO:159,decT:162, janH:0,janE:9,janO:58,janT:67,  febH:0,febE:8,febO:50,febT:58,  mar26Stk:82},
+  {sl:6, name:"M/S Joon HP Gas Gramin Vitarak",       omc:"HPCL",
+   decH:0,decE:0,decO:10,decT:10,  janH:0,janE:0,janO:8,janT:8,    febH:0,febE:0,febO:10,febT:10,  mar26Stk:8},
+  {sl:7, name:"Gadhadhar Gas Agency",                 omc:"IOCL",
+   decH:0,decE:71,decO:41,decT:112, janH:0,janE:80,janO:37,janT:117, febH:0,febE:52,febO:24,febT:76, mar26Stk:75},
+  {sl:8, name:"Annapurana Indane Gramin Vitarak",     omc:"IOCL",
+   decH:0,decE:0,decO:7,decT:7,    janH:0,janE:0,janO:6,janT:6,    febH:0,febE:0,febO:4,febT:4,    mar26Stk:44},
+  {sl:9, name:"Ashok Gas Service",                    omc:"IOCL",
+   decH:5,decE:0,decO:177,decT:182, janH:6,janE:0,janO:173,janT:179, febH:6,febE:0,febO:127,febT:133, mar26Stk:93},
+  {sl:10,name:"Latika Indane Gramin Vitrak",          omc:"BPCL",
+   decH:0,decE:0,decO:33,decT:33,  janH:0,janE:0,janO:10,janT:10,  febH:0,febE:0,febO:10,febT:10,  mar26Stk:36},
+  {sl:11,name:"Nishi Gas Agency",                     omc:"IOCL",
+   decH:0,decE:0,decO:102,decT:102, janH:0,janE:0,janO:105,janT:105, febH:0,febE:0,febO:126,febT:126, mar26Stk:1},
+  {sl:12,name:"Chandarding Indane Gramin Vitrak",     omc:"IOCL",
+   decH:0,decE:0,decO:31,decT:31,  janH:0,janE:0,janO:34,janT:34,  febH:0,febE:0,febO:17,febT:17,  mar26Stk:0},
+  {sl:13,name:"MS Indu Indane Gramin Vitrak",         omc:"IOCL",
+   decH:0,decE:10,decO:70,decT:80, janH:0,janE:12,janO:80,janT:92, febH:0,febE:11,febO:75,febT:86, mar26Stk:4},
+  {sl:14,name:"Mahamaya Gas Agency",                  omc:"IOCL",
+   decH:0,decE:0,decO:19,decT:19,  janH:0,janE:0,janO:42,janT:42,  febH:0,febE:0,febO:36,febT:36,  mar26Stk:289},
+  {sl:15,name:"Sapatgram Indane",                     omc:"IOCL",
+   decH:0,decE:0,decO:126,decT:126, janH:0,janE:0,janO:121,janT:121, febH:0,febE:0,febO:154,febT:154, mar26Stk:0},
+  {sl:16,name:"Shri Ganpati HP Gas Gramin Vitrak",    omc:"HPCL",
+   decH:0,decE:0,decO:0,decT:0,    janH:0,janE:0,janO:0,janT:0,    febH:0,febE:0,febO:4,febT:4,    mar26Stk:4},
+  {sl:17,name:"Taj Gas Agency",                       omc:"IOCL",
+   decH:0,decE:0,decO:12,decT:12,  janH:0,janE:0,janO:14,janT:14,  febH:0,febE:0,febO:4,febT:4,    mar26Stk:0},
+  {sl:18,name:"Belguri Bharat Gas Gramin Vitrak",     omc:"BPCL",
+   decH:0,decE:0,decO:0,decT:0,    janH:0,janE:0,janO:0,janT:0,    febH:0,febE:0,febO:0,febT:0,    mar26Stk:0},
+  {sl:19,name:"M/S Golapi HP Gas Gramin Vitarak Dharmasala", omc:"HPCL",
+   decH:2,decE:0,decO:3,decT:5,    janH:0,janE:0,janO:2,janT:2,    febH:1,febE:0,febO:2,febT:3,    mar26Stk:9}
+];
+var COMM_OMC_GROUPS = {
+  IOCL: [1,2,3,4,6,7,8,9,10,11,12,13,14,16],
+  HPCL: [0,5,15,18],
+  BPCL: [9,17]
+};
+var COMM_OMC_COLOR = {IOCL:'#f5c842',HPCL:'#7ab3f0',BPCL:'#a8d8a8'};
+
+window.renderCommSchematic = function(){
+  var wrap = document.getElementById("comm-schematic-wrap");
+  if(!wrap) return;
+  var f = function(v){ return (!v||v===0)?'<span class="val-zero">—</span>':v; };
+  var live = window.commData||{};
+  var stk = live.stock||{};
+  // use latest available live stock date, else fall back to static
+  var stkDates = Object.keys(stk).sort();
+  var useStkDate = stkDates.length ? stkDates[stkDates.length-1] : "";
+  // grand totals
+  var gt={decH:0,decE:0,decO:0,decT:0,janH:0,janE:0,janO:0,janT:0,febH:0,febE:0,febO:0,febT:0,stkStatic:0,stkLive:0};
+  COMM_STATIC.forEach(function(a){ gt.decH+=a.decH;gt.decE+=a.decE;gt.decO+=a.decO;gt.decT+=a.decT; gt.janH+=a.janH;gt.janE+=a.janE;gt.janO+=a.janO;gt.janT+=a.janT; gt.febH+=a.febH;gt.febE+=a.febE;gt.febO+=a.febO;gt.febT+=a.febT; gt.stkStatic+=a.mar26Stk; });
+  if(useStkDate){ for(var i=0;i<19;i++) gt.stkLive+=(stk[useStkDate][i]||0); }
+  var dispStk = useStkDate ? gt.stkLive : gt.stkStatic;
+  var html = '';
+  // legend
+  html += '<div class="comm-schema-legend">'
+    +'<span><span class="dot" style="background:#ff8c69"></span>Hospitals</span>'
+    +'<span><span class="dot" style="background:#63b3ed"></span>Educational</span>'
+    +'<span><span class="dot" style="background:#a0c4a0"></span>Others</span>'
+    +'<span><span class="dot" style="background:#e8b84b"></span>Total</span>'
+    +'<span><span class="dot" style="background:#00d4aa"></span>Mar-26 Stock</span>'
+    +'</div>';
+  html += '<table class="comm-schema-tbl"><thead>'
+    +'<tr>'
+    +'<th class="left" rowspan="2" style="width:28px">Sl.</th>'
+    +'<th class="left" rowspan="2" style="min-width:185px">Agency Name</th>'
+    +'<th rowspan="2" style="width:52px">OMC</th>'
+    +'<th colspan="4" class="month-hdr">Dec 2025</th>'
+    +'<th colspan="4" class="month-hdr">Jan 2026</th>'
+    +'<th colspan="4" class="month-hdr">Feb 2026</th>'
+    +'<th rowspan="2" style="color:#00d4aa;background:#071a28">Mar-26<br>Stock</th>'
+    +'</tr>'
+    +'<tr>'
+    // Dec
+    +'<th style="color:#ff8c69">Hosp.</th><th style="color:#63b3ed">Edu.</th><th style="color:#a0c4a0">Others</th><th style="color:#e8b84b">Total</th>'
+    // Jan
+    +'<th style="color:#ff8c69">Hosp.</th><th style="color:#63b3ed">Edu.</th><th style="color:#a0c4a0">Others</th><th style="color:#e8b84b">Total</th>'
+    // Feb
+    +'<th style="color:#ff8c69">Hosp.</th><th style="color:#63b3ed">Edu.</th><th style="color:#a0c4a0">Others</th><th style="color:#e8b84b">Total</th>'
+    +'</tr>'
+    +'</thead><tbody>';
+
+  var omcList = ['IOCL','HPCL','BPCL'];
+  omcList.forEach(function(omc){
+    var rows = COMM_STATIC.filter(function(a){ return a.omc===omc; });
+    if(!rows.length) return;
+    // OMC group header
+    html += '<tr class="grp-hdr" onclick="toggleSchemaGroup(''+omc+'')" data-grp="'+omc+'">'
+      +'<td colspan="15" style="color:'+COMM_OMC_COLOR[omc]+'"><i id="sg-arr-'+omc+'" style="display:inline-block;margin-right:6px;transition:transform .2s">▼</i>'+omc+'<span style="font-size:10px;color:#5a7490;font-weight:400;margin-left:8px">'+rows.length+' agencies</span></td></tr>';
+    // sub-header
+    html += '<tr class="grp-sub comm-sg-row-'+omc+'">'
+      +'<td colspan="3" class="left" style="padding-left:24px;color:#4da6ff;font-size:10px">AGENCY</td>'
+      +'<td style="color:#ff8c69;font-size:9px">HOSP</td><td style="color:#63b3ed;font-size:9px">EDU</td><td style="color:#a0c4a0;font-size:9px">OTH</td><td style="color:#e8b84b;font-size:9px">TOT</td>'
+      +'<td style="color:#ff8c69;font-size:9px">HOSP</td><td style="color:#63b3ed;font-size:9px">EDU</td><td style="color:#a0c4a0;font-size:9px">OTH</td><td style="color:#e8b84b;font-size:9px">TOT</td>'
+      +'<td style="color:#ff8c69;font-size:9px">HOSP</td><td style="color:#63b3ed;font-size:9px">EDU</td><td style="color:#a0c4a0;font-size:9px">OTH</td><td style="color:#e8b84b;font-size:9px">TOT</td>'
+      +'<td style="color:#00d4aa;font-size:9px">STK</td>'
+      +'</tr>';
+    // rows
+    rows.forEach(function(a){
+      var liveStk = useStkDate ? (stk[useStkDate][a.sl-1]||0) : a.mar26Stk;
+      html += '<tr class="comm-sg-row-'+omc+'">'
+        +'<td class="left">'+a.sl+'</td>'
+        +'<td class="left" style="padding-left:16px;font-size:11px">'+a.name+'</td>'
+        +'<td class="omc-badge"><span style="background:'+(omc==='IOCL'?'#3a2800':omc==='HPCL'?'#1a3a6b':'#1a3a1a')+';color:'+COMM_OMC_COLOR[omc]+';font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;white-space:nowrap">'+omc+'</span></td>'
+        +'<td class="val-hosp">'+f(a.decH)+'</td><td class="val-edu">'+f(a.decE)+'</td><td class="val-others">'+f(a.decO)+'</td><td class="val-total">'+f(a.decT)+'</td>'
+        +'<td class="val-hosp">'+f(a.janH)+'</td><td class="val-edu">'+f(a.janE)+'</td><td class="val-others">'+f(a.janO)+'</td><td class="val-total">'+f(a.janT)+'</td>'
+        +'<td class="val-hosp">'+f(a.febH)+'</td><td class="val-edu">'+f(a.febE)+'</td><td class="val-others">'+f(a.febO)+'</td><td class="val-total">'+f(a.febT)+'</td>'
+        +'<td class="val-stock">'+f(liveStk)+'</td>'
+        +'</tr>';
+    });
+  });
+
+  // District total row
+  html += '</tbody><tfoot>'
+    +'<tr class="total-row">'
+    +'<td class="left" colspan="3">DISTRICT TOTAL</td>'
+    +'<td class="val-hosp">'+gt.decH+'</td><td class="val-edu">'+gt.decE+'</td><td class="val-others">'+gt.decO+'</td><td class="val-total">'+gt.decT+'</td>'
+    +'<td class="val-hosp">'+gt.janH+'</td><td class="val-edu">'+gt.janE+'</td><td class="val-others">'+gt.janO+'</td><td class="val-total">'+gt.janT+'</td>'
+    +'<td class="val-hosp">'+gt.febH+'</td><td class="val-edu">'+gt.febE+'</td><td class="val-others">'+gt.febO+'</td><td class="val-total">'+gt.febT+'</td>'
+    +'<td class="val-stock">'+dispStk+'</td>'
+    +'</tr>'
+    +'</tfoot></table>';
+
+  wrap.innerHTML = html;
+};
+
+window.toggleSchemaGroup = function(omc){
+  var rows = document.querySelectorAll('.comm-sg-row-'+omc);
+  var arr = document.getElementById('sg-arr-'+omc);
+  var hdr = document.querySelector('[data-grp="'+omc+'"]');
+  var collapsed = hdr && hdr.dataset.collapsed==="1";
+  rows.forEach(function(r){ r.style.display = collapsed ? '' : 'none'; });
+  if(hdr) hdr.dataset.collapsed = collapsed ? "0" : "1";
+  if(arr) arr.style.transform = collapsed ? '' : 'rotate(-90deg)';
+};
+
 function getDB(){ return typeof db !== "undefined" ? db : (window.firebase && window.firebase.database ? window.firebase.database() : null); }
 
 window.loadCommData = function(){
@@ -1017,30 +1180,14 @@ window.toggleCommGroup = function(dist){
   }
 };
 window.toggleCommDetail = function(){
-  var d=document.getElementById("comm-agency-detail"); var btn=document.getElementById("comm-detail-toggle-btn"); if(!d) return;
-  var vis=d.style.display!=="none"; d.style.display=vis?"none":"";
-  if(btn) btn.innerHTML=vis?"&#9660; Show Agency Detail":"&#9650; Hide Agency Detail";
-  if(!vis) window.renderCommAgencyTable();
-}
-
-window.toggleAgencyTable = function(){
-  var body = document.getElementById('agency-table-body');
-  var btn = document.getElementById('agency-toggle-btn');
-  var hdr = document.getElementById('agency-table-header');
-  if(!body || !btn) return;
-  var isHidden = body.style.display === 'none';
-  if(isHidden){
-    body.style.display = '';
-    btn.textContent = '▲ Collapse';
-    btn.classList.remove('collapsed');
-    if(hdr) hdr.classList.remove('collapsed');
-  } else {
-    body.style.display = 'none';
-    btn.textContent = '▼ Expand';
-    btn.classList.add('collapsed');
-    if(hdr) hdr.classList.add('collapsed');
-  }
-};;
+    var d=document.getElementById("comm-agency-detail");
+    var btn=document.getElementById("comm-detail-toggle-btn");
+    if(!d) return;
+    var vis=d.style.display!=="none";
+    d.style.display=vis?"none":"";
+    if(btn) btn.innerHTML=vis?"&#9660; Show Agency Detail":"&#9650; Hide Agency Detail";
+    if(!vis){ window.renderCommSchematic(); window.renderCommAgencyTable(); }
+  };
 
 window.renderCommEntry = function(date){
   var wrap=document.getElementById("entry-form-wrap"); if(!wrap) return;
