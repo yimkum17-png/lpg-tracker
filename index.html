@@ -184,6 +184,46 @@ tfoot td.left{text-align:left;color:var(--text2);font-family:var(--font)}
   .charts-grid{grid-template-columns:1fr}
   #live-clock{display:none}
 }
+
+/* ── COMMERCIAL 19 KG MODULE ── */
+.comm-section{margin-top:28px;background:#0f1e2e;border:1px solid #1e3449;border-radius:12px;padding:22px 24px}
+.comm-section-title{font-size:15px;font-weight:700;color:#e8b84b;letter-spacing:.04em;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.comm-section-sub{font-size:11px;color:#5a7490;margin-bottom:18px}
+.comm-dash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:20px}
+.comm-stat-card{background:#0a1520;border:1px solid #1e3449;border-radius:10px;padding:16px;min-width:0}
+.comm-stat-card .csc-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:#5a7490;text-transform:uppercase;margin-bottom:6px}
+.comm-stat-card .csc-val{font-size:26px;font-weight:800;color:#00d4aa;line-height:1}
+.comm-stat-card .csc-sub{font-size:11px;color:#5a7490;margin-top:4px}
+.comm-stat-card.accent-yellow .csc-val{color:#e8b84b}
+.comm-stat-card.accent-blue .csc-val{color:#4da6ff}
+.comm-stat-card.accent-green .csc-val{color:#00d4aa}
+.comm-toggle-btn{background:#0f2a3f;border:1px solid #1e3449;color:#4da6ff;font-size:12px;font-weight:600;padding:7px 16px;border-radius:6px;cursor:pointer;transition:background .2s}
+.comm-toggle-btn:hover{background:#1a3a54}
+.comm-agency-tbl{width:100%;border-collapse:collapse;margin-top:14px;font-size:12px}
+.comm-agency-tbl th{background:#0a1520;color:#5a7490;font-weight:700;font-size:10px;letter-spacing:.05em;text-transform:uppercase;padding:8px 10px;text-align:right;border-bottom:1px solid #1e3449}
+.comm-agency-tbl th:first-child{text-align:left}
+.comm-agency-tbl td{padding:7px 10px;border-bottom:1px solid #0d2035;color:#c8d8e8;text-align:right}
+.comm-agency-tbl td:first-child{text-align:left;color:#e0ecf8}
+.comm-agency-tbl tr:hover td{background:#0a1e30}
+.comm-agency-tbl .tfoot-row td{background:#0a1520;color:#e8b84b;font-weight:700;border-top:2px solid #1e3449}
+.comm-agency-tbl .highlight{color:#00d4aa;font-weight:700}
+.comm-agency-tbl .highlight-y{color:#e8b84b;font-weight:700}
+.comm-entry-section{margin-top:28px;padding-top:24px;border-top:2px solid #1e3449}
+.comm-entry-title{font-size:14px;font-weight:700;color:#e8b84b;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.comm-entry-tbl{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:24px}
+.comm-entry-tbl th{background:#0a1520;color:#5a7490;font-weight:700;font-size:10px;letter-spacing:.05em;text-transform:uppercase;padding:9px 10px;text-align:right;border-bottom:1px solid #1e3449}
+.comm-entry-tbl th:first-child,.comm-entry-tbl th:nth-child(2){text-align:left}
+.comm-entry-tbl td{padding:7px 8px;border-bottom:1px solid #0d2035;vertical-align:middle;text-align:right}
+.comm-entry-tbl td:first-child,.comm-entry-tbl td:nth-child(2){text-align:left;color:#e0ecf8}
+.comm-entry-tbl input[type=number]{background:#0a1520;border:1px solid #1e3449;border-radius:5px;color:#e8b84b;font-size:13px;font-weight:700;padding:5px 8px;width:80px;text-align:right}
+.comm-entry-tbl input[type=number]:focus{outline:none;border-color:#4da6ff;background:#0d2038}
+.comm-entry-tbl .cum-cell{color:#00d4aa;font-weight:700}
+.comm-entry-tbl tfoot td{background:#0a1520;color:#e8b84b;font-weight:700;border-top:2px solid #1e3449}
+.comm-subsection-title{font-size:12px;font-weight:700;color:#4da6ff;margin:0 0 10px 0;text-transform:uppercase;letter-spacing:.05em}
+.comm-monthly-toggle{background:none;border:1px solid #1e3449;color:#5a7490;font-size:11px;padding:5px 12px;border-radius:5px;cursor:pointer;margin-bottom:12px}
+.comm-monthly-toggle:hover{color:#4da6ff;border-color:#4da6ff}
+.comm-monthly-wrap{overflow:hidden;transition:max-height .3s}
+
 </style>
 </head>
 <body>
@@ -262,6 +302,35 @@ tfoot td.left{text-align:left;color:var(--text2);font-family:var(--font)}
       </table>
     </div>
   </div>
+
+<!-- COMM DASHBOARD SECTION -->
+<div id="comm-dash-section" style="display:none">
+  <div class="comm-section">
+    <div class="comm-section-title"><span>&#128311;</span> Commercial 19 Kg &mdash; District Booking Overview</div>
+    <div class="comm-section-sub">Live data from Firebase &middot; <span id="comm-dash-date-label">Select a date to view</span></div>
+    <div class="comm-dash-grid">
+      <div class="comm-stat-card accent-yellow"><div class="csc-label">&#128218; Bookings Till Now</div><div class="csc-val" id="cds-btn">0</div><div class="csc-sub">Cumulative across all agencies</div></div>
+      <div class="comm-stat-card accent-green"><div class="csc-label">&#128204; New Bookings Today</div><div class="csc-val" id="cds-nbt">0</div><div class="csc-sub" id="cds-nbt-date">for selected date</div></div>
+      <div class="comm-stat-card accent-blue"><div class="csc-label">&#127880; Stock Available</div><div class="csc-val" id="cds-stock">0</div><div class="csc-sub">19 Kg Comm. (district)</div></div>
+      <div class="comm-stat-card"><div class="csc-label">&#128197; Dec 2025 Sales</div><div class="csc-val" id="cds-dec">0</div><div class="csc-sub">19 Kg Comm. (district)</div></div>
+      <div class="comm-stat-card"><div class="csc-label">&#128197; Jan 2026 Sales</div><div class="csc-val" id="cds-jan">0</div><div class="csc-sub">19 Kg Comm. (district)</div></div>
+      <div class="comm-stat-card"><div class="csc-label">&#128197; Feb 2026 Sales</div><div class="csc-val" id="cds-feb">0</div><div class="csc-sub">19 Kg Comm. (district)</div></div>
+    </div>
+    <button class="comm-toggle-btn" id="comm-detail-toggle-btn" onclick="toggleCommDetail()">&#9660; Show Agency Detail</button>
+    <div id="comm-agency-detail" style="display:none;overflow-x:auto">
+      <table class="comm-agency-tbl"><thead><tr>
+        <th>#</th><th>Agency</th><th>Dec Total</th><th>Jan Total</th><th>Feb Total</th>
+        <th>Stock Latest</th><th>New Book. Today</th><th>Bookings Till Now</th>
+      </tr></thead>
+      <tbody id="comm-agency-tbody"></tbody>
+      <tfoot><tr class="tfoot-row"><td colspan="2">DISTRICT TOTAL</td>
+        <td id="cdf-dec">0</td><td id="cdf-jan">0</td><td id="cdf-feb">0</td>
+        <td id="cdf-stock">0</td><td id="cdf-nbt">0</td><td id="cdf-btn">0</td>
+      </tr></tfoot></table>
+    </div>
+  </div>
+</div>
+
 </div>
 
 <!-- ENTRY -->
@@ -414,6 +483,10 @@ const AGENCIES = [
   {sl:14,distributor:"INDANE",name:"MAHAMAYA GASS AGENCY",conn_dom:30847,conn_comm:242},
   {sl:15,distributor:"INDANE",name:"SAPATGRAM INDANE",conn_dom:19758,conn_comm:142},
   {sl:16,distributor:"HP",name:"SHRI GANPATI HP GASS GRAMIN VITRAK",conn_dom:0,conn_comm:0}
+,
+  {sl:17,distributor:"INDANE",name:"TAJ GAS AGENCY",conn_dom:0,conn_comm:0},
+  {sl:18,distributor:"BPCL",name:"BELGURI BHARAT GAS GRAMIN VITRAK",conn_dom:0,conn_comm:0},
+  {sl:19,distributor:"HP",name:"GOLAPI HP GAS GRAMIN VITARAK DHARMASALA",conn_dom:0,conn_comm:0}
 ];
 
 // ── HELPERS ──
@@ -509,7 +582,7 @@ function renderDashboard() {
     <div class="stat-card amber"><div class="stat-label">Cylinders Received</div><div class="stat-value">${(totRD+totRC).toLocaleString('en-IN')}</div><div class="stat-detail">${totRD.toLocaleString('en-IN')} Dom · ${totRC.toLocaleString('en-IN')} Comm</div></div>
     <div class="stat-card"><div class="stat-label">Opening Stock</div><div class="stat-value">${(totOD+totOC).toLocaleString('en-IN')}</div><div class="stat-detail">Start of ${fmtD(date)}</div></div>
     <div class="stat-card"><div class="stat-label">Closing Stock</div><div class="stat-value">${(totCD+totCC).toLocaleString('en-IN')}</div><div class="stat-detail">${totCD.toLocaleString('en-IN')} Dom · ${totCC.toLocaleString('en-IN')} Comm</div></div>
-    <div class="stat-card red"><div class="stat-label">Active Agencies</div><div class="stat-value">${active}<span style="font-size:15px;color:var(--text2)"> / 16</span></div><div class="stat-detail">Reported sales today</div></div>
+    <div class="stat-card red"><div class="stat-label">Active Agencies</div><div class="stat-value">${active}<span style="font-size:15px;color:var(--text2)"> / 19</span></div><div class="stat-detail">Reported sales today</div></div>
   `;
 
   // Table body
@@ -743,7 +816,7 @@ function renderHistory() {
         <div class="hm-item">Sales <span>${totSale.toLocaleString('en-IN')}</span></div>
         <div class="hm-item">Received <span>${totRcvd.toLocaleString('en-IN')}</span></div>
         <div class="hm-item">Closing <span>${totCl.toLocaleString('en-IN')}</span></div>
-        <div class="hm-item">Active <span>${active}/16</span></div>
+        <div class="hm-item">Active <span>${active}/19</span></div>
       </div>
       <div class="history-actions">
         <button class="btn btn-outline btn-sm" onclick="viewDate('${date}')">View</button>
@@ -801,6 +874,233 @@ document.head.appendChild(shakeStyle);
 
 // ── INIT ──
 document.getElementById('entry-date').max=new Date().toISOString().split('T')[0];
+
+
+/* ===== COMMERCIAL 19 KG MODULE ===== */
+(function(){
+
+var AGENCIES = ['AGOMANI HP GAS GRAMIN VITARAK','MAHIRA INDIAN GRAMIN VITARAK','M/S KRISHNA GAS SERVICE','TARANGAJHAR INDANE GRAMIN VITARAK','M/S BAMA AGENCY','M/S JOON HP GAS GRAMIN VITARAK','GADHADHAR GAS AGENCY','ANNAPURANA INDANE GRAMIN VITARAK','ASHOK GASS SERVICE','LATIKA INDANE GRAMIN VITRAK','NISHI GASS AGENCY','CHANDARDING INDANE GRAMIN VITRAK','MS INDU INDANE GRAMIN VITRAK','MAHAMAYA GASS AGENCY','SAPATGRAM INDANE','SHRI GANPATI HP GASS GRAMIN VITRAK','TAJ GAS AGENCY','BELGURI BHARAT GAS GRAMIN VITRAK','GOLAPI HP GAS GRAMIN VITARAK DHARMASALA'];
+
+window.commData = window.commData || {};
+
+function getDB(){ return typeof db !== "undefined" ? db : (window.firebase && window.firebase.database ? window.firebase.database() : null); }
+
+window.loadCommData = function(){
+  var fdb = getDB(); if(!fdb) return;
+  fdb.ref("comm_monthly").once("value",function(snap){ window.commData.monthly=snap.val()||{}; window.updateCommDashCards(); window.renderCommAgencyTable(); });
+  fdb.ref("comm_stock").once("value",function(snap){ window.commData.stock=snap.val()||{}; window.updateCommDashCards(); window.renderCommAgencyTable(); });
+  fdb.ref("comm_bookings").once("value",function(snap){ window.commData.bookings=snap.val()||{}; window.updateCommDashCards(); window.renderCommAgencyTable(); });
+};
+
+window.updateCommDashCards = function(){
+  var date=(document.getElementById("dash-date")||{}).value||"";
+  if(date){ var el=document.getElementById("comm-dash-date-label"); if(el) el.textContent="Showing data for "+date; var nb=document.getElementById("cds-nbt-date"); if(nb) nb.textContent="for "+date; }
+  var bkgs=window.commData.bookings||{}; var dates=Object.keys(bkgs).sort();
+  var useDate=date&&bkgs[date]?date:(dates.length?dates[dates.length-1]:"");
+  var totalBtn=0,totalNbt=0;
+  if(useDate&&bkgs[useDate]){ var dayBk=bkgs[useDate]; for(var i=0;i<19;i++){ var ag=dayBk[i]||{}; totalBtn+=(ag.cum||0); totalNbt+=(ag.new||0); } }
+  var btnEl=document.getElementById("cds-btn"); var nbtEl2=document.getElementById("cds-nbt");
+  if(btnEl) btnEl.textContent=totalBtn.toLocaleString(); if(nbtEl2) nbtEl2.textContent=totalNbt.toLocaleString();
+  var stk=window.commData.stock||{}; var useDateStk=date&&stk[date]?date:(Object.keys(stk).sort().pop()||"");
+  var totalStock=0; if(useDateStk&&stk[useDateStk]){ for(var i=0;i<19;i++) totalStock+=(stk[useDateStk][i]||0); }
+  var stkEl=document.getElementById("cds-stock"); if(stkEl) stkEl.textContent=totalStock.toLocaleString();
+  var mon=window.commData.monthly||{}; var decT=0,janT=0,febT=0;
+  for(var i=0;i<19;i++){ var m=mon[i]||{}; decT+=(m.decH||0)+(m.decE||0)+(m.decO||0); janT+=(m.janH||0)+(m.janE||0)+(m.janO||0); febT+=(m.febH||0)+(m.febE||0)+(m.febO||0); }
+  var decEl=document.getElementById("cds-dec"); var janEl=document.getElementById("cds-jan"); var febEl=document.getElementById("cds-feb");
+  if(decEl) decEl.textContent=decT.toLocaleString(); if(janEl) janEl.textContent=janT.toLocaleString(); if(febEl) febEl.textContent=febT.toLocaleString();
+  var sec=document.getElementById("comm-dash-section"); if(sec) sec.style.display="";
+};
+
+window.renderCommAgencyTable = function(){
+  var tbody=document.getElementById("comm-agency-tbody"); if(!tbody) return;
+  var date=(document.getElementById("dash-date")||{}).value||"";
+  var mon=window.commData.monthly||{}; var stk=window.commData.stock||{}; var bkgs=window.commData.bookings||{};
+  var dates=Object.keys(bkgs).sort();
+  var useDate=date&&bkgs[date]?date:(dates.length?dates[dates.length-1]:"");
+  var useDateStk=date&&stk[date]?date:(Object.keys(stk).sort().pop()||"");
+  var rows=""; var totDec=0,totJan=0,totFeb=0,totStk=0,totNbt=0,totBtn=0;
+  for(var i=0;i<19;i++){
+    var m=mon[i]||{}; var dec=(m.decH||0)+(m.decE||0)+(m.decO||0); var jan=(m.janH||0)+(m.janE||0)+(m.janO||0); var feb=(m.febH||0)+(m.febE||0)+(m.febO||0);
+    var s2=useDateStk&&stk[useDateStk]?(stk[useDateStk][i]||0):0;
+    var ag=useDate&&bkgs[useDate]?(bkgs[useDate][i]||{}):{};var nbt=ag.new||0;var btn=ag.cum||0;
+    totDec+=dec;totJan+=jan;totFeb+=feb;totStk+=s2;totNbt+=nbt;totBtn+=btn;
+    rows+="<tr><td>"+(i+1)+"</td><td>"+AGENCIES[i]+"</td>"
+      +"<td class='"+(dec?"highlight-y":"")+"'>"+ (!dec?"&mdash;":dec)+"</td>"
+      +"<td class='"+(jan?"highlight-y":"")+"'>"+ (!jan?"&mdash;":jan)+"</td>"
+      +"<td class='"+(feb?"highlight-y":"")+"'>"+ (!feb?"&mdash;":feb)+"</td>"
+      +"<td class='"+(s2?"highlight":"")+"'>"+ (!s2?"&mdash;":s2)+"</td>"
+      +"<td class='"+(nbt?"highlight":"")+"'>"+ (!nbt?"&mdash;":nbt)+"</td>"
+      +"<td class='"+(btn?"highlight-y":"")+"'>"+ (!btn?"&mdash;":btn)+"</td></tr>";
+  }
+  tbody.innerHTML=rows;
+  var ids=["cdf-dec","cdf-jan","cdf-feb","cdf-stock","cdf-nbt","cdf-btn"];
+  var vals=[totDec,totJan,totFeb,totStk,totNbt,totBtn];
+  ids.forEach(function(id,k){ var e=document.getElementById(id); if(e) e.textContent=vals[k]; });
+};
+
+window.toggleCommDetail = function(){
+  var d=document.getElementById("comm-agency-detail"); var btn=document.getElementById("comm-detail-toggle-btn"); if(!d) return;
+  var vis=d.style.display!=="none"; d.style.display=vis?"none":"";
+  if(btn) btn.innerHTML=vis?"&#9660; Show Agency Detail":"&#9650; Hide Agency Detail";
+  if(!vis) window.renderCommAgencyTable();
+};
+
+window.renderCommEntry = function(date){
+  var wrap=document.getElementById("entry-form-wrap"); if(!wrap) return;
+  var old=document.getElementById("comm-entry-wrap"); if(old) old.remove();
+  var mon=window.commData.monthly||{}; var stk=window.commData.stock||{}; var bkgs=window.commData.bookings||{};
+  var bkgRows=""; var bkgToday=bkgs[date]||{};
+  for(var i=0;i<19;i++){
+    var ag=bkgToday[i]||{}; var nbt=ag.new||0; var cum=ag.cum||0;
+    bkgRows+="<tr><td>"+(i+1)+"</td><td>"+AGENCIES[i]+"</td>"
+      +"<td><input type='number' class='comm-bkg-input' data-idx='"+i+"' min='0' value='"+nbt+"'></td>"
+      +"<td class='cum-cell' id='cum-disp-"+i+"'>"+cum+"</td></tr>";
+  }
+  var stkRows=""; var stkToday=stk[date]||{};
+  for(var i=0;i<19;i++){
+    var sv=stkToday[i]||0;
+    stkRows+="<tr><td>"+(i+1)+"</td><td>"+AGENCIES[i]+"</td>"
+      +"<td><input type='number' class='comm-stk-input' data-idx='"+i+"' min='0' value='"+sv+"'></td></tr>";
+  }
+  var monRows="";
+  for(var i=0;i<19;i++){
+    var m=mon[i]||{};
+    monRows+="<tr><td>"+(i+1)+"</td><td>"+AGENCIES[i]+"</td>"
+      +"<td><input type='number' class='comm-mon-input' data-idx='"+i+"' data-month='decH' min='0' value='"+(m.decH||0)+"'></td>"
+      +"<td><input type='number' class='comm-mon-input' data-idx='"+i+"' data-month='decE' min='0' value='"+(m.decE||0)+"'></td>"
+      +"<td><input type='number' class='comm-mon-input' data-idx='"+i+"' data-month='decO' min='0' value='"+(m.decO||0)+"'></td>"
+      +"<td class='cum-cell' id='dec-tot-"+i+"'>"+(((m.decH||0)+(m.decE||0)+(m.decO||0))||"0")+"</td>"
+      +"<td><input type='number' class='comm-mon-input' data-idx='"+i+"' data-month='janH' min='0' value='"+(m.janH||0)+"'></td>"
+      +"<td><input type='number' class='comm-mon-input' data-idx='"+i+"' data-month='janE' min='0' value='"+(m.janE||0)+"'></td>"
+      +"<td><input type='number' class='comm-mon-input' data-idx='"+i+"' data-month='janO' min='0' value='"+(m.janO||0)+"'></td>"
+      +"<td class='cum-cell' id='jan-tot-"+i+"'>"+(((m.janH||0)+(m.janE||0)+(m.janO||0))||"0")+"</td>"
+      +"<td><input type='number' class='comm-mon-input' data-idx='"+i+"' data-month='febH' min='0' value='"+(m.febH||0)+"'></td>"
+      +"<td><input type='number' class='comm-mon-input' data-idx='"+i+"' data-month='febE' min='0' value='"+(m.febE||0)+"'></td>"
+      +"<td><input type='number' class='comm-mon-input' data-idx='"+i+"' data-month='febO' min='0' value='"+(m.febO||0)+"'></td>"
+      +"<td class='cum-cell' id='feb-tot-"+i+"'>"+(((m.febH||0)+(m.febE||0)+(m.febO||0))||"0")+"</td></tr>";
+  }
+  var html="<div id='comm-entry-wrap' class='comm-entry-section'>"
+    +"<div class='comm-entry-title'><span>&#128311;</span> Commercial 19 Kg Data Entry &mdash; "+date+"</div>"
+    +"<div class='comm-subsection-title'>&#128204; Daily Bookings</div>"
+    +"<div style='overflow-x:auto'><table class='comm-entry-tbl'>"
+    +"<thead><tr><th>#</th><th>Agency</th><th>New Bookings Today</th><th>Bookings Till Now (auto)</th></tr></thead>"
+    +"<tbody id='comm-bkg-tbody'>"+bkgRows+"</tbody></table></div>"
+    +"<div class='comm-subsection-title' style='margin-top:20px'>&#127880; Stock Available (Col. H)</div>"
+    +"<div style='overflow-x:auto'><table class='comm-entry-tbl'>"
+    +"<thead><tr><th>#</th><th>Agency</th><th>Stock Available (19 Kg Comm.)</th></tr></thead>"
+    +"<tbody>"+stkRows+"</tbody></table></div>"
+    +"<button class='comm-monthly-toggle' id='comm-mon-toggle-btn' onclick='toggleMonthlyEntry()'>"
+    +"&#9654; Show Monthly Sales Entry (Dec 2025 / Jan 2026 / Feb 2026)</button>"
+    +"<div id='comm-mon-wrap' class='comm-monthly-wrap' style='display:none;overflow-x:auto'>"
+    +"<table class='comm-entry-tbl'><thead>"
+    +"<tr><th rowspan='2'>#</th><th rowspan='2'>Agency</th>"
+    +"<th colspan='4'>Dec 2025</th><th colspan='4'>Jan 2026</th><th colspan='4'>Feb 2026</th></tr>"
+    +"<tr><th>Hosp.</th><th>Edu.</th><th>Others</th><th>Total</th>"
+    +"<th>Hosp.</th><th>Edu.</th><th>Others</th><th>Total</th>"
+    +"<th>Hosp.</th><th>Edu.</th><th>Others</th><th>Total</th></tr>"
+    +"</thead><tbody>"+monRows+"</tbody></table></div>"
+    +"<div style='margin-top:24px;padding-top:20px;border-top:1px solid #1e3449;text-align:center'>"
+    +"<button onclick='saveEntry()' style='background:linear-gradient(135deg,#00b894,#00d4aa);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;padding:14px 48px;cursor:pointer;letter-spacing:.04em'>&#128190; Save All to Firebase</button>"
+    +"</div>"
+    +"</div>";
+  wrap.insertAdjacentHTML("afterend",html);
+  document.querySelectorAll(".comm-bkg-input").forEach(function(inp){ inp.addEventListener("change",window.recalcCumulative); inp.addEventListener("input",window.recalcCumulative); });
+  document.querySelectorAll(".comm-mon-input").forEach(function(inp){ inp.addEventListener("input",window.recalcMonthly); });
+};
+
+window.recalcCumulative = function(){
+  var date=(document.getElementById("entry-date")||{}).value||""; if(!date) return;
+  var bkgs=window.commData.bookings||{};
+  var dates=Object.keys(bkgs).sort().filter(function(d){ return d<date; });
+  for(var i=0;i<19;i++){
+    var todayNew=parseInt((document.querySelector(".comm-bkg-input[data-idx='"+i+"']")||{value:0}).value)||0;
+    var cumPrev=0;
+    dates.forEach(function(d){ var ag=(bkgs[d]||{})[i]||{}; cumPrev+=(ag.new||0); });
+    var cumEl=document.getElementById("cum-disp-"+i);
+    if(cumEl) cumEl.textContent=cumPrev+todayNew;
+  }
+};
+
+window.recalcMonthly = function(){
+  for(var i=0;i<19;i++){
+    var getV=function(idx,month){ var el=document.querySelector(".comm-mon-input[data-idx='"+idx+"'][data-month='"+month+"']"); return el?parseInt(el.value)||0:0; };
+    var decT=getV(i,"decH")+getV(i,"decE")+getV(i,"decO");
+    var janT=getV(i,"janH")+getV(i,"janE")+getV(i,"janO");
+    var febT=getV(i,"febH")+getV(i,"febE")+getV(i,"febO");
+    var de=document.getElementById("dec-tot-"+i); if(de) de.textContent=decT;
+    var je=document.getElementById("jan-tot-"+i); if(je) je.textContent=janT;
+    var fe=document.getElementById("feb-tot-"+i); if(fe) fe.textContent=febT;
+  }
+};
+
+window.toggleMonthlyEntry = function(){
+  var w=document.getElementById("comm-mon-wrap"); var btn=document.getElementById("comm-mon-toggle-btn"); if(!w) return;
+  var vis=w.style.display!=="none"; w.style.display=vis?"none":"";
+  if(btn) btn.innerHTML=vis?"&#9654; Show Monthly Sales Entry (Dec 2025 / Jan 2026 / Feb 2026)":"&#9660; Hide Monthly Sales Entry";
+};
+
+window.saveCommEntry = function(date,callback){
+  var fdb=getDB(); if(!fdb){ if(callback) callback(); return; }
+  var saves=[];
+  var bkgData={}; var bkgs=window.commData.bookings||{};
+  var dates=Object.keys(bkgs).sort().filter(function(d){ return d<date; });
+  for(var i=0;i<19;i++){
+    var todayNew=parseInt((document.querySelector(".comm-bkg-input[data-idx='"+i+"']")||{value:0}).value)||0;
+    var cumPrev=0;
+    dates.forEach(function(d){ var ag=(bkgs[d]||{})[i]||{}; cumPrev+=(ag.new||0); });
+    bkgData[i]={new:todayNew,cum:cumPrev+todayNew};
+  }
+  saves.push(fdb.ref("comm_bookings/"+date).set(bkgData));
+  var stkData={};
+  for(var i=0;i<19;i++){ stkData[i]=parseInt((document.querySelector(".comm-stk-input[data-idx='"+i+"']")||{value:0}).value)||0; }
+  saves.push(fdb.ref("comm_stock/"+date).set(stkData));
+  var monData={};
+  for(var i=0;i<19;i++){
+    var getV2=function(idx,month){ var el=document.querySelector(".comm-mon-input[data-idx='"+idx+"'][data-month='"+month+"']"); return el?parseInt(el.value)||0:0; };
+    monData[i]={decH:getV2(i,"decH"),decE:getV2(i,"decE"),decO:getV2(i,"decO"),janH:getV2(i,"janH"),janE:getV2(i,"janE"),janO:getV2(i,"janO"),febH:getV2(i,"febH"),febE:getV2(i,"febE"),febO:getV2(i,"febO")};
+  }
+  saves.push(fdb.ref("comm_monthly").set(monData));
+  Promise.all(saves).then(function(){
+    window.commData.bookings=window.commData.bookings||{}; window.commData.bookings[date]=bkgData;
+    window.commData.stock=window.commData.stock||{}; window.commData.stock[date]=stkData;
+    window.commData.monthly=monData; if(callback) callback();
+  }).catch(function(e){ console.error("comm save error",e); if(callback) callback(); });
+};
+
+if(!window.saveEntry||!window.saveEntry._commPatched){
+  var _origSave=window.saveEntry;
+  window.saveEntry=function(){
+    var date=(document.getElementById("entry-date")||{}).value||"";
+    if(date&&document.getElementById("comm-entry-wrap")){
+      var origFn=_origSave;
+      window.saveCommEntry(date,function(){ origFn&&origFn(); });
+    } else { _origSave&&_origSave(); }
+  };
+  window.saveEntry._commPatched=true;
+}
+
+if(!window.loadEntryForm||!window.loadEntryForm._commPatched){
+  var _origLoad=window.loadEntryForm;
+  window.loadEntryForm=function(){
+    _origLoad&&_origLoad();
+    var date=(document.getElementById("entry-date")||{}).value||"";
+    if(date){ setTimeout(function(){ window.loadCommData(); setTimeout(function(){ window.renderCommEntry(date); },400); },100); }
+  };
+  window.loadEntryForm._commPatched=true;
+}
+
+if(window.renderDashboard&&!window.renderDashboard._commPatched){
+  var _origRD=window.renderDashboard;
+  window.renderDashboard=function(a,b,c){ _origRD(a,b,c); window.updateCommDashCards(); window.renderCommAgencyTable(); };
+  window.renderDashboard._commPatched=true;
+}
+
+window.loadCommData();
+var ddEl=document.getElementById("dash-date");
+if(ddEl){ ddEl.addEventListener("change",function(){ window.updateCommDashCards(); window.renderCommAgencyTable(); }); }
+
+})();
+
 </script>
 </body>
 </html>
