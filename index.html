@@ -78,6 +78,10 @@ main{max-width:1360px;margin:0 auto;padding:24px 28px}
 .chart-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px}
 .chart-title{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:16px;text-transform:uppercase;letter-spacing:.5px}
 .chart-wrap{position:relative;height:240px}
+/* ── STOCK FILTER BUTTONS ── */
+.stock-filter-btn{background:transparent;border:1px solid var(--border2);color:var(--text2);border-radius:var(--radius-sm);padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;letter-spacing:.03em}
+.stock-filter-btn:hover{border-color:var(--teal);color:var(--teal)}
+.stock-filter-btn.active{background:var(--teal-dim);border-color:var(--teal);color:var(--teal)}
 
 /* ── DATE PICKER STYLED ── */
 .date-select{background:var(--card);border:1px solid var(--border2);color:var(--text);border-radius:var(--radius-sm);padding:7px 12px;font-size:13px;outline:none;cursor:pointer}
@@ -282,7 +286,17 @@ tfoot td.left{text-align:left;color:var(--text2);font-family:var(--font)}
   </div>
   <div class="charts-grid">
     <div class="chart-card"><div class="chart-title">📈 Daily Sales Trend — Domestic &amp; Commercial</div><div class="chart-wrap"><canvas id="chart-trend"></canvas></div></div>
-    <div class="chart-card"><div class="chart-title">📦 Stock Movement — Opening · Received · Sales · Closing</div><div class="chart-wrap"><canvas id="chart-stock"></canvas></div></div>
+    <div class="chart-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+        <div class="chart-title" style="margin-bottom:0">📦 Stock Movement — Opening · Received · Sales · Closing</div>
+        <div id="stock-filter-btns" style="display:flex;gap:6px">
+          <button class="stock-filter-btn active" data-filter="domestic" onclick="setStockFilter('domestic',this)">Domestic</button>
+          <button class="stock-filter-btn" data-filter="commercial" onclick="setStockFilter('commercial',this)">Commercial</button>
+          <button class="stock-filter-btn" data-filter="both" onclick="setStockFilter('both',this)">Both</button>
+        </div>
+      </div>
+      <div class="chart-wrap"><canvas id="chart-stock"></canvas></div>
+    </div>
   </div>
   <div id="comm-dash-section" style="display:none">
   <div class="comm-section">
@@ -639,12 +653,14 @@ const CHART_OPTS = {
 
 function renderCharts(dates) {
   const labels = dates.map(d=>fmtD(d));
-  const saleDom = dates.map(d=>allData[d]?allData[d].reduce((a,r)=>a+n(r.sale_dom),0):0);
+  const saleDom  = dates.map(d=>allData[d]?allData[d].reduce((a,r)=>a+n(r.sale_dom),0):0);
   const saleComm = dates.map(d=>allData[d]?allData[d].reduce((a,r)=>a+n(r.sale_comm),0):0);
-  const opDom = dates.map(d=>allData[d]?allData[d].reduce((a,r)=>a+n(r.op_dom),0):0);
-  const rcvdDom = dates.map(d=>allData[d]?allData[d].reduce((a,r)=>a+n(r.rcvd_dom),0):0);
-  const clDom = dates.map(d=>allData[d]?allData[d].reduce((a,r)=>a+n(r.cl_dom),0):0);
-
+  const opDom    = dates.map(d=>allData[d]?allData[d].reduce((a,r)=>a+n(r.op_dom),0):0);
+  const rcvdDom  = dates.map(d=>allData[d]?allData[d].reduce((a,r)=>a+n(r.rcvd_dom),0):0);
+  const clDom    = dates.map(d=>allData[d]?allData[d].reduce((a,r)=>a+n(r.cl_dom),0):0);
+  const opComm   = dates.map(d=>allData[d]?allData[d].reduce((a,r)=>a+n(r.op_comm),0):0);
+  const rcvdComm = dates.map(d=>allData[d]?allData[d].reduce((a,r)=>a+n(r.rcvd_comm),0):0);
+  const clComm   = dates.map(d=>allData[d]?allData[d].reduce((a,r)=>a+n(r.cl_comm),0):0);
   // Trend chart
   const ctx1 = document.getElementById('chart-trend').getContext('2d');
   if(charTrend) charTrend.destroy();
@@ -652,18 +668,29 @@ function renderCharts(dates) {
     {label:'Domestic Sales',data:saleDom,borderColor:'#00c9a7',backgroundColor:'rgba(0,201,167,.1)',tension:.35,fill:true,pointBackgroundColor:'#00c9a7',pointRadius:4},
     {label:'Commercial Sales',data:saleComm,borderColor:'#f5a623',backgroundColor:'rgba(245,166,35,.08)',tension:.35,fill:true,pointBackgroundColor:'#f5a623',pointRadius:4}
   ]},options:{...CHART_OPTS,plugins:{...CHART_OPTS.plugins}}});
-
-  // Stock movement chart
+  // Stock movement chart — all datasets defined, visibility controlled by filter
   const ctx2 = document.getElementById('chart-stock').getContext('2d');
   if(chartStock) chartStock.destroy();
+  const flt = window._stockChartFilter || 'domestic';
+  const domVisible  = flt === 'domestic' || flt === 'both';
+  const commVisible = flt === 'commercial' || flt === 'both';
   chartStock = new Chart(ctx2,{type:'bar',data:{labels,datasets:[
-    {label:'Opening Stock (Dom)',data:opDom,backgroundColor:'rgba(0,201,167,.25)',borderColor:'#00c9a7',borderWidth:1.5},
-    {label:'Received (Dom)',data:rcvdDom,backgroundColor:'rgba(245,166,35,.25)',borderColor:'#f5a623',borderWidth:1.5},
-    {label:'Sales (Dom)',data:saleDom,backgroundColor:'rgba(231,76,60,.25)',borderColor:'#e74c3c',borderWidth:1.5},
-    {label:'Closing Stock (Dom)',data:clDom,backgroundColor:'rgba(52,152,219,.25)',borderColor:'#3498db',borderWidth:1.5}
+    {label:'Opening Stock (Dom)', data:opDom,   backgroundColor:'rgba(0,201,167,.25)',  borderColor:'#00c9a7',borderWidth:1.5,hidden:!domVisible},
+    {label:'Received (Dom)',      data:rcvdDom,  backgroundColor:'rgba(245,166,35,.25)', borderColor:'#f5a623',borderWidth:1.5,hidden:!domVisible},
+    {label:'Sales (Dom)',         data:saleDom,  backgroundColor:'rgba(231,76,60,.25)',  borderColor:'#e74c3c',borderWidth:1.5,hidden:!domVisible},
+    {label:'Closing Stock (Dom)', data:clDom,   backgroundColor:'rgba(52,152,219,.25)', borderColor:'#3498db',borderWidth:1.5,hidden:!domVisible},
+    {label:'Opening Stock (Comm)',data:opComm,  backgroundColor:'rgba(0,201,167,.55)',  borderColor:'#00c9a7',borderWidth:1.5,borderDash:[4,2],hidden:!commVisible},
+    {label:'Received (Comm)',     data:rcvdComm, backgroundColor:'rgba(245,166,35,.55)', borderColor:'#f5a623',borderWidth:1.5,borderDash:[4,2],hidden:!commVisible},
+    {label:'Sales (Comm)',        data:saleComm, backgroundColor:'rgba(231,76,60,.55)',  borderColor:'#e74c3c',borderWidth:1.5,borderDash:[4,2],hidden:!commVisible},
+    {label:'Closing Stock (Comm)',data:clComm,  backgroundColor:'rgba(52,152,219,.55)', borderColor:'#3498db',borderWidth:1.5,borderDash:[4,2],hidden:!commVisible}
   ]},options:{...CHART_OPTS,plugins:{...CHART_OPTS.plugins},scales:{...CHART_OPTS.scales,x:{...CHART_OPTS.scales.x,stacked:false}}}});
 }
-
+function setStockFilter(filter, btn) {
+  window._stockChartFilter = filter;
+  document.querySelectorAll('.stock-filter-btn').forEach(b => b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderCharts(allDates());
+}
 function refreshAll() { if(db) { toast('Refreshing…',''); } else { onDataUpdate(); toast('Refreshed (offline mode)',''); } }
 setInterval(()=>{ if(document.getElementById('page-dashboard').classList.contains('active')) renderDashboard(); }, 60000);
 
