@@ -373,43 +373,7 @@ tfoot td.left{text-align:left;color:var(--text2);font-family:var(--font)}
   </div>
 
 
-<div class="table-card">
-    <div class="table-card-header" id="agency-table-header" onclick="toggleAgencyTable()">
-      <h3>📋 Agency-wise Daily Return — All 19 Agencies</h3>
-      <button class="agency-toggle-btn" id="agency-toggle-btn">▲ Collapse</button>
-    </div>
-    <div class="table-scroll" id="agency-table-body">
-      <table>
-        <thead>
-          <tr>
-            <th rowspan="2" style="width:32px">Sl.</th>
-            <th rowspan="2" class="left" style="min-width:80px">Dist.</th>
-            <th rowspan="2" class="left" style="min-width:180px">Agency Name</th>
-            <th colspan="2" style="background:#0f2a45">Connections</th>
-            <th colspan="2" class="th-group">Opening Stock</th>
-            <th colspan="2" class="th-group">Received</th>
-            <th colspan="2" class="th-group">Total (E+F)</th>
-            <th colspan="2" class="th-group" style="background:#2d1a00">Sales</th>
-            <th colspan="2" class="th-group">Closing Stock</th>
-          </tr>
-          <tr>
-            <th style="background:#0f2a45">Dom</th><th style="background:#0f2a45">Comm</th>
-            <th>Dom</th><th>Comm</th>
-            <th>Dom</th><th>Comm</th>
-            <th>Dom</th><th>Comm</th>
-            <th style="background:#2d1a00">Dom</th><th style="background:#2d1a00">Comm</th>
-            <th>Dom</th><th>Comm</th>
-          </tr>
-        </thead>
-        <tbody id="dash-tbody"><tr><td colspan="15" style="text-align:center;padding:24px;color:var(--text2)">Loading data…</td></tr></tbody>
-        <tfoot><tr id="dash-tfoot"><td colspan="15"></td></tr></tfoot>
-      </table>
-    </div>
-  </div>
-
-
-
-    <!-- COMMERCIAL SALES DASHBOARD (integrated) -->
+<!-- COMMERCIAL SALES DASHBOARD (integrated) -->
     <div style="margin-top:32px;padding-top:24px;border-top:2px solid var(--border)">
       <div class="sec-header">
         <div>
@@ -499,6 +463,45 @@ tfoot td.left{text-align:left;color:var(--text2);font-family:var(--font)}
         </table>
       </div>
     </div>
+
+
+<div class="table-card">
+    <div class="table-card-header" id="agency-table-header" onclick="toggleAgencyTable()">
+      <h3>📋 Agency-wise Daily Return — All 19 Agencies</h3>
+      <button class="agency-toggle-btn" id="agency-toggle-btn">▲ Collapse</button>
+    </div>
+    <div class="table-scroll" id="agency-table-body">
+      <table>
+        <thead>
+          <tr>
+            <th rowspan="2" style="width:32px">Sl.</th>
+            <th rowspan="2" class="left" style="min-width:80px">Dist.</th>
+            <th rowspan="2" class="left" style="min-width:180px">Agency Name</th>
+            <th colspan="2" style="background:#0f2a45">Connections</th>
+            <th colspan="2" class="th-group">Opening Stock</th>
+            <th colspan="2" class="th-group">Received</th>
+            <th colspan="2" class="th-group">Total (E+F)</th>
+            <th colspan="2" class="th-group" style="background:#2d1a00">Sales</th>
+            <th colspan="2" class="th-group">Closing Stock</th>
+          </tr>
+          <tr>
+            <th style="background:#0f2a45">Dom</th><th style="background:#0f2a45">Comm</th>
+            <th>Dom</th><th>Comm</th>
+            <th>Dom</th><th>Comm</th>
+            <th>Dom</th><th>Comm</th>
+            <th style="background:#2d1a00">Dom</th><th style="background:#2d1a00">Comm</th>
+            <th>Dom</th><th>Comm</th>
+          </tr>
+        </thead>
+        <tbody id="dash-tbody"><tr><td colspan="15" style="text-align:center;padding:24px;color:var(--text2)">Loading data…</td></tr></tbody>
+        <tfoot><tr id="dash-tfoot"><td colspan="15"></td></tr></tfoot>
+      </table>
+    </div>
+  </div>
+
+
+
+    
   
     </div>
   </div>
