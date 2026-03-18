@@ -263,6 +263,55 @@ tfoot td.left{text-align:left;color:var(--text2);font-family:var(--font)}
 .comm-group-hdr.collapsed .cg-arrow{transform:rotate(-90deg)}
 .comm-group-hdr .cg-count{font-size:10px;color:#5a7490;font-weight:400;margin-left:8px}
 
+
+/* ── COMMERCIAL SALES DASHBOARD ── */
+.comm-sales-page { }
+.csdb-filter-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
+.csdb-filter-btn { background:transparent; border:1px solid #1e3449; color:#5a7490; border-radius:6px; padding:7px 16px; font-size:12px; font-weight:600; cursor:pointer; transition:all .15s; letter-spacing:.04em; }
+.csdb-filter-btn:hover { border-color:#00c9a7; color:#00c9a7; }
+.csdb-filter-btn.active { background:rgba(0,201,167,.15); border-color:#00c9a7; color:#00c9a7; }
+.csdb-filter-btn.hosp.active { background:rgba(255,140,105,.15); border-color:#ff8c69; color:#ff8c69; }
+.csdb-filter-btn.edu.active { background:rgba(99,179,237,.15); border-color:#63b3ed; color:#63b3ed; }
+.csdb-filter-btn.others.active { background:rgba(160,196,160,.15); border-color:#a0c4a0; color:#a0c4a0; }
+.csdb-kpi-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(155px,1fr)); gap:12px; margin-bottom:24px; }
+.csdb-kpi { background:#0f1e2e; border:1px solid #1e3449; border-radius:10px; padding:16px; position:relative; overflow:hidden; }
+.csdb-kpi::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:#00c9a7; }
+.csdb-kpi.hosp::before { background:#ff8c69; }
+.csdb-kpi.edu::before { background:#63b3ed; }
+.csdb-kpi.others::before { background:#a0c4a0; }
+.csdb-kpi.total::before { background:#e8b84b; }
+.csdb-kpi.stock::before { background:#00d4aa; }
+.csdb-kpi-label { font-size:10px; font-weight:700; letter-spacing:.06em; color:#5a7490; text-transform:uppercase; margin-bottom:6px; }
+.csdb-kpi-val { font-size:24px; font-weight:800; font-family:'IBM Plex Mono',monospace; color:#e8edf2; line-height:1; }
+.csdb-kpi-sub { font-size:11px; color:#5a7490; margin-top:4px; }
+.csdb-kpi.hosp .csdb-kpi-val { color:#ff8c69; }
+.csdb-kpi.edu .csdb-kpi-val { color:#63b3ed; }
+.csdb-kpi.others .csdb-kpi-val { color:#a0c4a0; }
+.csdb-kpi.total .csdb-kpi-val { color:#e8b84b; }
+.csdb-kpi.stock .csdb-kpi-val { color:#00d4aa; }
+.csdb-charts-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(440px,1fr)); gap:16px; margin-bottom:24px; }
+.csdb-chart-card { background:#0f1e2e; border:1px solid #1e3449; border-radius:10px; padding:20px; }
+.csdb-chart-title { font-size:12px; font-weight:700; color:#8fa3b8; text-transform:uppercase; letter-spacing:.5px; margin-bottom:16px; }
+.csdb-chart-wrap { position:relative; height:240px; }
+.csdb-table-card { background:#0f1e2e; border:1px solid #1e3449; border-radius:10px; overflow:hidden; margin-bottom:20px; }
+.csdb-table-header { padding:14px 18px; background:rgba(255,255,255,.03); border-bottom:1px solid #1e3449; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+.csdb-table-header h3 { font-size:13px; font-weight:700; color:#e8edf2; margin:0; }
+.csdb-tbl { width:100%; border-collapse:collapse; font-size:12px; min-width:800px; }
+.csdb-tbl thead th { background:#071626; color:#5a7490; font-weight:700; font-size:10px; letter-spacing:.05em; text-transform:uppercase; padding:9px 10px; border-bottom:2px solid #1e3449; text-align:right; white-space:nowrap; }
+.csdb-tbl thead th.left { text-align:left; }
+.csdb-tbl thead .mhdr { background:#0d2035; color:#4da6ff; text-align:center; font-size:10px; }
+.csdb-tbl tbody td { padding:7px 10px; border-bottom:1px solid #0a1e30; color:#c8d8e8; text-align:right; font-family:'IBM Plex Mono',monospace; font-size:11px; }
+.csdb-tbl tbody td.left { text-align:left; font-family:'IBM Plex Sans',sans-serif; font-size:12px; color:#e0ecf8; }
+.csdb-tbl tbody tr:hover td { background:#0a1e30; }
+.csdb-tbl tfoot td { background:#071626; color:#e8b84b; font-weight:700; padding:9px 10px; border-top:2px solid #1e3449; text-align:right; font-family:'IBM Plex Mono',monospace; font-size:11px; }
+.csdb-tbl tfoot td.left { text-align:left; font-family:'IBM Plex Sans',sans-serif; color:#e8b84b; }
+.csdb-hidden { display:none !important; }
+.omc-tag { display:inline-block; font-size:9px; font-weight:700; padding:2px 6px; border-radius:3px; letter-spacing:.04em; }
+.omc-iocl { background:#3a2800; color:#f5c842; }
+.omc-hpcl { background:#1a3a6b; color:#7ab3f0; }
+.omc-bpcl { background:#1a3a1a; color:#a8d8a8; }
+.omc-brpl { background:#2a1a3a; color:#d4a8f0; }
+.csdb-zero { color:#2a4a68; }
 </style>
 </head>
 <body>
@@ -288,6 +337,7 @@ tfoot td.left{text-align:left;color:var(--text2);font-family:var(--font)}
   <button class="nav-btn" onclick="showPage('entry',this)"><span class="nav-icon">✏️</span>Daily Entry</button>
   <button class="nav-btn" onclick="showPage('history',this)"><span class="nav-icon">📅</span>History</button>
   <button class="nav-btn" onclick="showPage('export',this)"><span class="nav-icon">⬇️</span>Export</button>
+  <button class="nav-btn" onclick="showPage('commsales',this)"><span class="nav-icon">📦</span>Comm. Sales</button>
 </nav>
 
 <main>
@@ -433,6 +483,98 @@ tfoot td.left{text-align:left;color:var(--text2);font-family:var(--font)}
   </div>
 </div>
 
+
+  <!-- COMMERCIAL SALES DASHBOARD -->
+  <div id="page-commsales" class="page comm-sales-page">
+    <div class="sec-header">
+      <div>
+        <div class="sec-title">Commercial 19 Kg — Sales Dashboard</div>
+        <div class="sec-sub">Agency-wise sales data · Dec 2025 · Jan 2026 · Feb 2026 · Mar-26 Stock</div>
+      </div>
+    </div>
+
+    <!-- FILTER ROW -->
+    <div class="csdb-filter-row">
+      <span style="font-size:12px;color:#5a7490;font-weight:600;letter-spacing:.04em;">FILTER BY CATEGORY:</span>
+      <button class="csdb-filter-btn active" id="csdb-f-all" onclick="csdbSetFilter('all',this)">📊 All</button>
+      <button class="csdb-filter-btn hosp" id="csdb-f-hosp" onclick="csdbSetFilter('hosp',this)">🏥 Hospitals</button>
+      <button class="csdb-filter-btn edu" id="csdb-f-edu" onclick="csdbSetFilter('edu',this)">🎓 Educational</button>
+      <button class="csdb-filter-btn others" id="csdb-f-others" onclick="csdbSetFilter('others',this)">🏪 Others</button>
+      <span style="margin-left:auto;font-size:11px;color:#5a7490;">
+        <span id="csdb-filter-label" style="color:#00c9a7;font-weight:600;">All categories</span>
+      </span>
+    </div>
+
+    <!-- KPI CARDS -->
+    <div class="csdb-kpi-grid" id="csdb-kpi-grid">
+      <div class="csdb-kpi total"><div class="csdb-kpi-label">Dec 2025 Total</div><div class="csdb-kpi-val" id="csdb-kv-dec">—</div><div class="csdb-kpi-sub">19 Kg Commercial</div></div>
+      <div class="csdb-kpi total"><div class="csdb-kpi-label">Jan 2026 Total</div><div class="csdb-kpi-val" id="csdb-kv-jan">—</div><div class="csdb-kpi-sub">19 Kg Commercial</div></div>
+      <div class="csdb-kpi total"><div class="csdb-kpi-label">Feb 2026 Total</div><div class="csdb-kpi-val" id="csdb-kv-feb">—</div><div class="csdb-kpi-sub">19 Kg Commercial</div></div>
+      <div class="csdb-kpi stock"><div class="csdb-kpi-label">Mar-26 Stock</div><div class="csdb-kpi-val" id="csdb-kv-stk">—</div><div class="csdb-kpi-sub">District total</div></div>
+      <div class="csdb-kpi hosp"><div class="csdb-kpi-label">🏥 Hospitals (3-mo)</div><div class="csdb-kpi-val" id="csdb-kv-hosp">—</div><div class="csdb-kpi-sub">Dec+Jan+Feb total</div></div>
+      <div class="csdb-kpi edu"><div class="csdb-kpi-label">🎓 Educational (3-mo)</div><div class="csdb-kpi-val" id="csdb-kv-edu">—</div><div class="csdb-kpi-sub">Dec+Jan+Feb total</div></div>
+      <div class="csdb-kpi others"><div class="csdb-kpi-label">🏪 Others (3-mo)</div><div class="csdb-kpi-val" id="csdb-kv-others">—</div><div class="csdb-kpi-sub">Dec+Jan+Feb total</div></div>
+    </div>
+
+    <!-- CHARTS -->
+    <div class="csdb-charts-grid">
+      <div class="csdb-chart-card">
+        <div class="csdb-chart-title">📈 Monthly Sales Trend — by Category</div>
+        <div class="csdb-chart-wrap"><canvas id="csdb-chart-trend"></canvas></div>
+      </div>
+      <div class="csdb-chart-card">
+        <div class="csdb-chart-title">🏢 OMC-wise Sales Breakdown</div>
+        <div class="csdb-chart-wrap"><canvas id="csdb-chart-omc"></canvas></div>
+      </div>
+      <div class="csdb-chart-card">
+        <div class="csdb-chart-title">📊 Category Split per Month</div>
+        <div class="csdb-chart-wrap"><canvas id="csdb-chart-catbar"></canvas></div>
+      </div>
+      <div class="csdb-chart-card">
+        <div class="csdb-chart-title">📦 Top 10 Agencies by Total Sales</div>
+        <div class="csdb-chart-wrap"><canvas id="csdb-chart-top10"></canvas></div>
+      </div>
+    </div>
+
+    <!-- AGENCY TABLE -->
+    <div class="csdb-table-card">
+      <div class="csdb-table-header">
+        <h3>📋 Agency-wise Sales Detail — 19 Agencies</h3>
+        <div style="font-size:11px;color:#5a7490">Showing: <span id="csdb-table-filter-label" style="color:#00c9a7;font-weight:600;">All categories</span></div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="csdb-tbl" id="csdb-main-table">
+          <thead>
+            <tr>
+              <th class="left" rowspan="2" style="width:28px">Sl.</th>
+              <th class="left" rowspan="2" style="min-width:175px">Agency Name</th>
+              <th rowspan="2" style="width:58px">OMC</th>
+              <th colspan="4" class="mhdr">Dec 2025</th>
+              <th colspan="4" class="mhdr">Jan 2026</th>
+              <th colspan="4" class="mhdr">Feb 2026</th>
+              <th rowspan="2" style="color:#00d4aa;background:#071a28;width:60px">Mar-26<br>Stock</th>
+            </tr>
+            <tr id="csdb-subhdr">
+              <th style="color:#ff8c69" class="csdb-col-hosp">Hosp.</th>
+              <th style="color:#63b3ed" class="csdb-col-edu">Edu.</th>
+              <th style="color:#a0c4a0" class="csdb-col-others">Others</th>
+              <th style="color:#e8b84b" class="csdb-col-total">Total</th>
+              <th style="color:#ff8c69" class="csdb-col-hosp">Hosp.</th>
+              <th style="color:#63b3ed" class="csdb-col-edu">Edu.</th>
+              <th style="color:#a0c4a0" class="csdb-col-others">Others</th>
+              <th style="color:#e8b84b" class="csdb-col-total">Total</th>
+              <th style="color:#ff8c69" class="csdb-col-hosp">Hosp.</th>
+              <th style="color:#63b3ed" class="csdb-col-edu">Edu.</th>
+              <th style="color:#a0c4a0" class="csdb-col-others">Others</th>
+              <th style="color:#e8b84b" class="csdb-col-total">Total</th>
+            </tr>
+          </thead>
+          <tbody id="csdb-tbody"></tbody>
+          <tfoot><tr id="csdb-tfoot"></tr></tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
 </main>
 
 <!-- PIN MODAL -->
@@ -1343,6 +1485,261 @@ window.loadCommData();
 var ddEl=document.getElementById("dash-date");
 if(ddEl){ ddEl.addEventListener("change",function(){ window.updateCommDashCards(); window.renderCommAgencyTable(); }); }
 
+})();
+
+
+/* ===== COMMERCIAL SALES DASHBOARD ===== */
+(function(){
+  var CSDB_DATA = [
+    {sl:1,  name:"Agomani HP Gas Gramin Vitarak",                 omc:"HPCL", decH:0,decE:1,decO:10, janH:0,janE:1,janO:12, febH:0,febE:1,febO:20,  mar26Stk:0},
+    {sl:2,  name:"Mahira Indian Gramin Vitarak",                  omc:"IOCL", decH:0,decE:0,decO:5,  janH:0,janE:0,janO:9,  febH:0,febE:0,febO:6,   mar26Stk:138},
+    {sl:3,  name:"M/S Krishna Gas Service",                       omc:"IOCL", decH:0,decE:6,decO:353,janH:0,janE:4,janO:305,febH:0,febE:6,febO:262,  mar26Stk:22},
+    {sl:4,  name:"Tarangijhar Indane Gramin Vitarak",             omc:"IOCL", decH:0,decE:0,decO:0,  janH:0,janE:0,janO:0,  febH:0,febE:0,febO:1,   mar26Stk:39},
+    {sl:5,  name:"M/S Bama Agency",                               omc:"IOCL", decH:0,decE:3,decO:159,janH:0,janE:9,janO:58, febH:0,febE:8,febO:50,  mar26Stk:82},
+    {sl:6,  name:"M/S Joon HP Gas Gramin Vitarak",                omc:"HPCL", decH:0,decE:0,decO:10, janH:0,janE:0,janO:8,  febH:0,febE:0,febO:10,  mar26Stk:8},
+    {sl:7,  name:"Gadhadhar Gas Agency",                          omc:"IOCL", decH:0,decE:71,decO:41,janH:0,janE:80,janO:37,febH:0,febE:52,febO:24,  mar26Stk:75},
+    {sl:8,  name:"Annapurana Indane Gramin Vitarak",              omc:"IOCL", decH:0,decE:0,decO:7,  janH:0,janE:0,janO:6,  febH:0,febE:0,febO:4,   mar26Stk:44},
+    {sl:9,  name:"Ashok Gas Service",                             omc:"IOCL", decH:5,decE:0,decO:177,janH:6,janE:0,janO:173,febH:6,febE:0,febO:127,  mar26Stk:93},
+    {sl:10, name:"Latika Indane Gramin Vitrak",                   omc:"BPCL", decH:0,decE:0,decO:33, janH:0,janE:0,janO:10, febH:0,febE:0,febO:10,  mar26Stk:36},
+    {sl:11, name:"Nishi Gas Agency",                              omc:"IOCL", decH:0,decE:0,decO:102,janH:0,janE:0,janO:105,febH:0,febE:0,febO:126,  mar26Stk:1},
+    {sl:12, name:"Chandarding Indane Gramin Vitrak",              omc:"IOCL", decH:0,decE:0,decO:31, janH:0,janE:0,janO:34, febH:0,febE:0,febO:17,  mar26Stk:0},
+    {sl:13, name:"MS Indu Indane Gramin Vitrak",                  omc:"IOCL", decH:0,decE:10,decO:70,janH:0,janE:12,janO:80,febH:0,febE:11,febO:75,  mar26Stk:4},
+    {sl:14, name:"Mahamaya Gas Agency",                           omc:"IOCL", decH:0,decE:0,decO:19, janH:0,janE:0,janO:42, febH:0,febE:0,febO:36,  mar26Stk:289},
+    {sl:15, name:"Sapatgram Indane",                              omc:"IOCL", decH:0,decE:0,decO:126,janH:0,janE:0,janO:121,febH:0,febE:0,febO:154,  mar26Stk:0},
+    {sl:16, name:"Shri Ganpati HP Gas Gramin Vitrak",             omc:"HPCL", decH:0,decE:0,decO:0,  janH:0,janE:0,janO:0,  febH:0,febE:0,febO:4,   mar26Stk:4},
+    {sl:17, name:"Taj Gas Agency",                                omc:"IOCL", decH:0,decE:0,decO:12, janH:0,janE:0,janO:14, febH:0,febE:0,febO:4,   mar26Stk:0},
+    {sl:18, name:"Belguri Bharat Gas Gramin Vitrak",              omc:"BPCL", decH:0,decE:0,decO:0,  janH:0,janE:0,janO:0,  febH:0,febE:0,febO:0,   mar26Stk:0},
+    {sl:19, name:"M/S Golapi HP Gas Gramin Vitarak Dharmasala",   omc:"HPCL", decH:2,decE:0,decO:3,  janH:0,janE:0,janO:2,  febH:1,febE:0,febO:2,   mar26Stk:9}
+  ];
+
+  var _csdbFilter = 'all';
+  var _csdbCharts = {};
+
+  function csdbGetVal(row, month, cat) {
+    if (cat === 'hosp') return row[month+'H']||0;
+    if (cat === 'edu')  return row[month+'E']||0;
+    if (cat === 'others') return row[month+'O']||0;
+    // total
+    return (row[month+'H']||0)+(row[month+'E']||0)+(row[month+'O']||0);
+  }
+
+  window.csdbSetFilter = function(filter, btn) {
+    _csdbFilter = filter;
+    document.querySelectorAll('.csdb-filter-btn').forEach(function(b){ b.classList.remove('active'); });
+    if (btn) btn.classList.add('active');
+    var labels = {all:'All categories', hosp:'Hospitals only', edu:'Educational only', others:'Others only'};
+    var lbl = labels[filter]||filter;
+    var fl = document.getElementById('csdb-filter-label');
+    if (fl) fl.textContent = lbl;
+    var tfl = document.getElementById('csdb-table-filter-label');
+    if (tfl) tfl.textContent = lbl;
+    // Toggle column visibility
+    var cats = ['hosp','edu','others','total'];
+    cats.forEach(function(c){
+      var vis = (filter==='all') ? true : (filter===c) ? true : (c==='total' && filter!=='all') ? false : false;
+      document.querySelectorAll('.csdb-col-'+c).forEach(function(el){ el.style.display = vis ? '' : 'none'; });
+    });
+    csdbRenderKPIs();
+    csdbRenderTable();
+    csdbRenderCharts();
+  };
+
+  function csdbRenderKPIs() {
+    var f = _csdbFilter;
+    var totDecH=0,totDecE=0,totDecO=0,totDecT=0;
+    var totJanH=0,totJanE=0,totJanO=0,totJanT=0;
+    var totFebH=0,totFebE=0,totFebO=0,totFebT=0;
+    var totStk=0;
+    CSDB_DATA.forEach(function(r){
+      totDecH+=r.decH; totDecE+=r.decE; totDecO+=r.decO; totDecT+=r.decH+r.decE+r.decO;
+      totJanH+=r.janH; totJanE+=r.janE; totJanO+=r.janO; totJanT+=r.janH+r.janE+r.janO;
+      totFebH+=r.febH; totFebE+=r.febE; totFebO+=r.febO; totFebT+=r.febH+r.febE+r.febO;
+      totStk+=r.mar26Stk;
+    });
+    function kv(id, val) { var e=document.getElementById(id); if(e) e.textContent=val.toLocaleString('en-IN'); }
+    if (f==='all') {
+      kv('csdb-kv-dec', totDecT); kv('csdb-kv-jan', totJanT); kv('csdb-kv-feb', totFebT);
+    } else if (f==='hosp') {
+      kv('csdb-kv-dec', totDecH); kv('csdb-kv-jan', totJanH); kv('csdb-kv-feb', totFebH);
+    } else if (f==='edu') {
+      kv('csdb-kv-dec', totDecE); kv('csdb-kv-jan', totJanE); kv('csdb-kv-feb', totFebE);
+    } else if (f==='others') {
+      kv('csdb-kv-dec', totDecO); kv('csdb-kv-jan', totJanO); kv('csdb-kv-feb', totFebO);
+    }
+    kv('csdb-kv-stk', totStk);
+    kv('csdb-kv-hosp', totDecH+totJanH+totFebH);
+    kv('csdb-kv-edu', totDecE+totJanE+totFebE);
+    kv('csdb-kv-others', totDecO+totJanO+totFebO);
+  }
+
+  function csdbRenderTable() {
+    var f = _csdbFilter;
+    var tbody = document.getElementById('csdb-tbody');
+    var tfoot = document.getElementById('csdb-tfoot');
+    if (!tbody) return;
+    var totDecH=0,totDecE=0,totDecO=0,totDecT=0;
+    var totJanH=0,totJanE=0,totJanO=0,totJanT=0;
+    var totFebH=0,totFebE=0,totFebO=0,totFebT=0;
+    var totStk=0;
+    var omcClass = {IOCL:'omc-iocl',HPCL:'omc-hpcl',BPCL:'omc-bpcl',BRPL:'omc-brpl'};
+    function fv(v) { return v ? ('<span style="color:inherit">'+v+'</span>') : '<span class="csdb-zero">—</span>'; }
+    var rows = '';
+    CSDB_DATA.forEach(function(r){
+      var dH=r.decH,dE=r.decE,dO=r.decO,dT=dH+dE+dO;
+      var jH=r.janH,jE=r.janE,jO=r.janO,jT=jH+jE+jO;
+      var fH=r.febH,fE=r.febE,fO=r.febO,fT=fH+fE+fO;
+      totDecH+=dH;totDecE+=dE;totDecO+=dO;totDecT+=dT;
+      totJanH+=jH;totJanE+=jE;totJanO+=jO;totJanT+=jT;
+      totFebH+=fH;totFebE+=fE;totFebO+=fO;totFebT+=fT;
+      totStk+=r.mar26Stk;
+      rows += '<tr>';
+      rows += '<td class="left">'+r.sl+'</td>';
+      rows += '<td class="left" style="font-size:11.5px">'+r.name+'</td>';
+      rows += '<td><span class="omc-tag '+(omcClass[r.omc]||'')+'">'+r.omc+'</span></td>';
+      rows += '<td class="csdb-col-hosp" style="color:#ff8c69">'+fv(dH)+'</td>';
+      rows += '<td class="csdb-col-edu" style="color:#63b3ed">'+fv(dE)+'</td>';
+      rows += '<td class="csdb-col-others" style="color:#a0c4a0">'+fv(dO)+'</td>';
+      rows += '<td class="csdb-col-total" style="color:#e8b84b;font-weight:700">'+fv(dT)+'</td>';
+      rows += '<td class="csdb-col-hosp" style="color:#ff8c69">'+fv(jH)+'</td>';
+      rows += '<td class="csdb-col-edu" style="color:#63b3ed">'+fv(jE)+'</td>';
+      rows += '<td class="csdb-col-others" style="color:#a0c4a0">'+fv(jO)+'</td>';
+      rows += '<td class="csdb-col-total" style="color:#e8b84b;font-weight:700">'+fv(jT)+'</td>';
+      rows += '<td class="csdb-col-hosp" style="color:#ff8c69">'+fv(fH)+'</td>';
+      rows += '<td class="csdb-col-edu" style="color:#63b3ed">'+fv(fE)+'</td>';
+      rows += '<td class="csdb-col-others" style="color:#a0c4a0">'+fv(fO)+'</td>';
+      rows += '<td class="csdb-col-total" style="color:#e8b84b;font-weight:700">'+fv(fT)+'</td>';
+      rows += '<td style="color:#00d4aa;font-weight:700">'+fv(r.mar26Stk)+'</td>';
+      rows += '</tr>';
+    });
+    tbody.innerHTML = rows;
+    // Apply column visibility based on filter
+    var cats = ['hosp','edu','others','total'];
+    cats.forEach(function(c){
+      var vis = (f==='all') ? true : (f===c) ? true : (c==='total' && f!=='all') ? false : false;
+      document.querySelectorAll('.csdb-col-'+c).forEach(function(el){ el.style.display = vis ? '' : 'none'; });
+    });
+    // Footer
+    var ft = '<td class="left" colspan="3">DISTRICT TOTAL</td>';
+    ft += '<td class="csdb-col-hosp" style="color:#ff8c69">'+totDecH+'</td>';
+    ft += '<td class="csdb-col-edu" style="color:#63b3ed">'+totDecE+'</td>';
+    ft += '<td class="csdb-col-others" style="color:#a0c4a0">'+totDecO+'</td>';
+    ft += '<td class="csdb-col-total">'+totDecT+'</td>';
+    ft += '<td class="csdb-col-hosp" style="color:#ff8c69">'+totJanH+'</td>';
+    ft += '<td class="csdb-col-edu" style="color:#63b3ed">'+totJanE+'</td>';
+    ft += '<td class="csdb-col-others" style="color:#a0c4a0">'+totJanO+'</td>';
+    ft += '<td class="csdb-col-total">'+totJanT+'</td>';
+    ft += '<td class="csdb-col-hosp" style="color:#ff8c69">'+totFebH+'</td>';
+    ft += '<td class="csdb-col-edu" style="color:#63b3ed">'+totFebE+'</td>';
+    ft += '<td class="csdb-col-others" style="color:#a0c4a0">'+totFebO+'</td>';
+    ft += '<td class="csdb-col-total">'+totFebT+'</td>';
+    ft += '<td style="color:#00d4aa">'+totStk+'</td>';
+    tfoot.innerHTML = ft;
+  }
+
+  var CSDB_CHART_OPTS = {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:'#8fa3b8',font:{size:10,family:'IBM Plex Sans'},boxWidth:10,padding:12}},tooltip:{backgroundColor:'#132236',borderColor:'#2a4a68',borderWidth:1,titleColor:'#e8edf2',bodyColor:'#8fa3b8',padding:8}},
+    scales:{x:{ticks:{color:'#5a7490',font:{size:10}},grid:{color:'#1e344920'}},y:{ticks:{color:'#5a7490',font:{size:10}},grid:{color:'#1e344930'}}}
+  };
+
+  function csdbRenderCharts() {
+    var f = _csdbFilter;
+    var months = ['Dec 2025','Jan 2026','Feb 2026'];
+    // Aggregate data
+    var agg = {hosp:[0,0,0], edu:[0,0,0], others:[0,0,0], total:[0,0,0]};
+    var omcAgg = {};
+    CSDB_DATA.forEach(function(r){
+      var omc = r.omc;
+      if (!omcAgg[omc]) omcAgg[omc] = {dec:0,jan:0,feb:0};
+      omcAgg[omc].dec += (r.decH+r.decE+r.decO);
+      omcAgg[omc].jan += (r.janH+r.janE+r.janO);
+      omcAgg[omc].feb += (r.febH+r.febE+r.febO);
+      agg.hosp[0]+=r.decH; agg.hosp[1]+=r.janH; agg.hosp[2]+=r.febH;
+      agg.edu[0]+=r.decE;  agg.edu[1]+=r.janE;  agg.edu[2]+=r.febE;
+      agg.others[0]+=r.decO; agg.others[1]+=r.janO; agg.others[2]+=r.febO;
+      agg.total[0]+=(r.decH+r.decE+r.decO); agg.total[1]+=(r.janH+r.janE+r.janO); agg.total[2]+=(r.febH+r.febE+r.febO);
+    });
+
+    // Chart 1: Trend line by category
+    var ctx1 = document.getElementById('csdb-chart-trend');
+    if (ctx1) {
+      if (_csdbCharts.trend) _csdbCharts.trend.destroy();
+      var datasets1 = [];
+      if (f==='all'||f==='hosp')   datasets1.push({label:'Hospitals',data:agg.hosp,borderColor:'#ff8c69',backgroundColor:'rgba(255,140,105,.12)',tension:.35,fill:true,pointBackgroundColor:'#ff8c69',pointRadius:4});
+      if (f==='all'||f==='edu')    datasets1.push({label:'Educational',data:agg.edu,borderColor:'#63b3ed',backgroundColor:'rgba(99,179,237,.12)',tension:.35,fill:true,pointBackgroundColor:'#63b3ed',pointRadius:4});
+      if (f==='all'||f==='others') datasets1.push({label:'Others',data:agg.others,borderColor:'#a0c4a0',backgroundColor:'rgba(160,196,160,.12)',tension:.35,fill:true,pointBackgroundColor:'#a0c4a0',pointRadius:4});
+      if (f==='all') datasets1.push({label:'Total',data:agg.total,borderColor:'#e8b84b',backgroundColor:'rgba(232,184,75,.08)',tension:.35,fill:false,pointBackgroundColor:'#e8b84b',pointRadius:5,borderWidth:2.5,borderDash:[5,3]});
+      _csdbCharts.trend = new Chart(ctx1.getContext('2d'),{type:'line',data:{labels:months,datasets:datasets1},options:JSON.parse(JSON.stringify(CSDB_CHART_OPTS))});
+    }
+
+    // Chart 2: OMC-wise breakdown (grouped bar)
+    var ctx2 = document.getElementById('csdb-chart-omc');
+    if (ctx2) {
+      if (_csdbCharts.omc) _csdbCharts.omc.destroy();
+      var omcNames = Object.keys(omcAgg);
+      var omcColors = {IOCL:{b:'rgba(245,200,66,.7)',brd:'#f5c842'},HPCL:{b:'rgba(122,179,240,.7)',brd:'#7ab3f0'},BPCL:{b:'rgba(168,216,168,.7)',brd:'#a8d8a8'},BRPL:{b:'rgba(212,168,240,.7)',brd:'#d4a8f0'}};
+      var ds2 = omcNames.map(function(omc){
+        var c = omcColors[omc]||{b:'rgba(200,200,200,.5)',brd:'#ccc'};
+        return {label:omc,data:[omcAgg[omc].dec,omcAgg[omc].jan,omcAgg[omc].feb],backgroundColor:c.b,borderColor:c.brd,borderWidth:1.5};
+      });
+      _csdbCharts.omc = new Chart(ctx2.getContext('2d'),{type:'bar',data:{labels:months,datasets:ds2},options:JSON.parse(JSON.stringify(CSDB_CHART_OPTS))});
+    }
+
+    // Chart 3: Category split stacked bar per month
+    var ctx3 = document.getElementById('csdb-chart-catbar');
+    if (ctx3) {
+      if (_csdbCharts.catbar) _csdbCharts.catbar.destroy();
+      var catOpts = JSON.parse(JSON.stringify(CSDB_CHART_OPTS));
+      catOpts.scales.x.stacked = true;
+      catOpts.scales.y.stacked = true;
+      var ds3 = [];
+      if (f==='all'||f==='hosp')   ds3.push({label:'Hospitals',data:agg.hosp,backgroundColor:'rgba(255,140,105,.75)',borderColor:'#ff8c69',borderWidth:1});
+      if (f==='all'||f==='edu')    ds3.push({label:'Educational',data:agg.edu,backgroundColor:'rgba(99,179,237,.75)',borderColor:'#63b3ed',borderWidth:1});
+      if (f==='all'||f==='others') ds3.push({label:'Others',data:agg.others,backgroundColor:'rgba(160,196,160,.75)',borderColor:'#a0c4a0',borderWidth:1});
+      _csdbCharts.catbar = new Chart(ctx3.getContext('2d'),{type:'bar',data:{labels:months,datasets:ds3},options:catOpts});
+    }
+
+    // Chart 4: Top 10 agencies by total sales
+    var ctx4 = document.getElementById('csdb-chart-top10');
+    if (ctx4) {
+      if (_csdbCharts.top10) _csdbCharts.top10.destroy();
+      var ranked = CSDB_DATA.map(function(r){
+        var t;
+        if (f==='hosp') t=(r.decH+r.janH+r.febH);
+        else if (f==='edu') t=(r.decE+r.janE+r.febE);
+        else if (f==='others') t=(r.decO+r.janO+r.febO);
+        else t=(r.decH+r.decE+r.decO+r.janH+r.janE+r.janO+r.febH+r.febE+r.febO);
+        return {name:r.name.length>22?r.name.substring(0,22)+'…':r.name,total:t,omc:r.omc};
+      }).sort(function(a,b){return b.total-a.total;}).slice(0,10);
+      var omcColorMap = {IOCL:'rgba(245,200,66,.7)',HPCL:'rgba(122,179,240,.7)',BPCL:'rgba(168,216,168,.7)',BRPL:'rgba(212,168,240,.7)'};
+      var top10opts = JSON.parse(JSON.stringify(CSDB_CHART_OPTS));
+      top10opts.indexAxis = 'y';
+      top10opts.plugins.legend = {display:false};
+      _csdbCharts.top10 = new Chart(ctx4.getContext('2d'),{
+        type:'bar',
+        data:{
+          labels:ranked.map(function(r){return r.name;}),
+          datasets:[{data:ranked.map(function(r){return r.total;}),backgroundColor:ranked.map(function(r){return omcColorMap[r.omc]||'rgba(200,200,200,.5)';}),borderColor:ranked.map(function(r){return ({IOCL:'#f5c842',HPCL:'#7ab3f0',BPCL:'#a8d8a8',BRPL:'#d4a8f0'})[r.omc]||'#ccc';}),borderWidth:1.5}]
+        },
+        options:top10opts
+      });
+    }
+  }
+
+  // Initialize when the comm sales page becomes active
+  var _csdbInited = false;
+  var origShowPage = window.showPage;
+  window.showPage = function(id, btn) {
+    origShowPage(id, btn);
+    if (id === 'commsales') {
+      if (!_csdbInited) {
+        _csdbInited = true;
+        csdbRenderKPIs();
+        csdbRenderTable();
+        csdbRenderCharts();
+      }
+    }
+  };
 })();
 
 </script>
