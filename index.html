@@ -371,26 +371,7 @@ tfoot td.left{text-align:left;color:var(--text2);font-family:var(--font)}
       <div class="chart-wrap"><canvas id="chart-stock"></canvas></div>
     </div>
   </div>
-  <div id="comm-dash-section" style="display:none">
-  <div class="comm-section">
-    <div class="comm-section-title"><span>&#128311;</span> Commercial 19 Kg &mdash; District Booking Overview</div>
-    <div class="comm-section-sub">Live data from Firebase &middot; <span id="comm-dash-date-label">Select a date to view</span></div>
-    <div class="comm-dash-grid">
-      <div class="comm-stat-card accent-yellow"><div class="csc-label">&#128218; Bookings Till Now</div><div class="csc-val" id="cds-btn">0</div><div class="csc-sub">Cumulative across all agencies</div></div>
-      <div class="comm-stat-card accent-green"><div class="csc-label">&#128204; New Bookings Today</div><div class="csc-val" id="cds-nbt">0</div><div class="csc-sub" id="cds-nbt-date">for selected date</div></div>
-      <div class="comm-stat-card accent-blue"><div class="csc-label">&#127880; Stock Available</div><div class="csc-val" id="cds-stock">0</div><div class="csc-sub">19 Kg Comm. (district)</div></div>
-      <div class="comm-stat-card"><div class="csc-label">&#128197; Dec 2025 Sales</div><div class="csc-val" id="cds-dec">0</div><div class="csc-sub">19 Kg Comm. (district)</div></div>
-      <div class="comm-stat-card"><div class="csc-label">&#128197; Jan 2026 Sales</div><div class="csc-val" id="cds-jan">0</div><div class="csc-sub">19 Kg Comm. (district)</div></div>
-      <div class="comm-stat-card"><div class="csc-label">&#128197; Feb 2026 Sales</div><div class="csc-val" id="cds-feb">0</div><div class="csc-sub">19 Kg Comm. (district)</div></div>
-    </div>
-    <button class="comm-toggle-btn" id="comm-detail-toggle-btn" onclick="toggleCommDetail()">&#9660; Show Agency Detail</button>
-          <div id="comm-agency-detail" style="display:none">
-            <div class="comm-schematic" id="comm-schematic-wrap">
-              <!-- rendered by renderCommSchematic() -->
-            </div>
-          </div>
-  </div>
-</div>
+
 
 <div class="table-card">
     <div class="table-card-header" id="agency-table-header" onclick="toggleAgencyTable()">
@@ -1259,7 +1240,6 @@ window.updateCommDashCards = function(){
   for(var i=0;i<19;i++){ var m=mon[i]||{}; decT+=(m.decH||0)+(m.decE||0)+(m.decO||0); janT+=(m.janH||0)+(m.janE||0)+(m.janO||0); febT+=(m.febH||0)+(m.febE||0)+(m.febO||0); }
   var decEl=document.getElementById("cds-dec"); var janEl=document.getElementById("cds-jan"); var febEl=document.getElementById("cds-feb");
   if(decEl) decEl.textContent=decT.toLocaleString(); if(janEl) janEl.textContent=janT.toLocaleString(); if(febEl) febEl.textContent=febT.toLocaleString();
-  var sec=document.getElementById("comm-dash-section"); if(sec) sec.style.display="";
 };
 
 window.renderCommAgencyTable = function(){
