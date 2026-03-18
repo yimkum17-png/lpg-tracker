@@ -337,7 +337,6 @@ tfoot td.left{text-align:left;color:var(--text2);font-family:var(--font)}
   <button class="nav-btn" onclick="showPage('entry',this)"><span class="nav-icon">✏️</span>Daily Entry</button>
   <button class="nav-btn" onclick="showPage('history',this)"><span class="nav-icon">📅</span>History</button>
   <button class="nav-btn" onclick="showPage('export',this)"><span class="nav-icon">⬇️</span>Export</button>
-  <button class="nav-btn" onclick="showPage('commsales',this)"><span class="nav-icon">📦</span>Comm. Sales</button>
 </nav>
 
 <main>
@@ -427,69 +426,17 @@ tfoot td.left{text-align:left;color:var(--text2);font-family:var(--font)}
     </div>
   </div>
 
-</div>
-
-<!-- ENTRY -->
-<div id="page-entry" class="page">
-  <div id="entry-locked" style="max-width:480px;margin:40px auto;text-align:center">
-    <div style="font-size:48px;margin-bottom:16px">🔒</div>
-    <h2 style="font-size:18px;font-weight:700;margin-bottom:8px">Entry Protected</h2>
-    <p style="color:var(--text2);margin-bottom:24px;font-size:14px">Enter the operator PIN to access the daily data entry form.</p>
-    <button class="btn btn-teal" style="margin:0 auto" onclick="showPinModal()">Enter PIN</button>
-  </div>
-  <div id="entry-unlocked" style="display:none">
-    <div class="sec-header">
-      <div><div class="sec-title">Daily Return Entry</div><div class="sec-sub" id="entry-time-notice">Loading…</div></div>
-      <button class="btn btn-outline btn-sm" onclick="lockEntry()">🔒 Lock</button>
-    </div>
-    <div class="entry-header">
-      <label style="font-size:13px;font-weight:600;color:var(--text2)">Return Date:</label>
-      <input type="date" class="entry-date-input" id="entry-date">
-      <button class="btn btn-teal btn-sm" onclick="loadEntryForm()">Load Form</button>
-      <span id="entry-status-msg" style="font-size:12px;color:var(--text2)"></span>
-    </div>
-    <div id="entry-notice"></div>
-    <div id="entry-form-wrap"></div>
-  </div>
-</div>
-
-<!-- HISTORY -->
-<div id="page-history" class="page">
-  <div class="sec-header">
-    <div><div class="sec-title">Daily Return History</div><div class="sec-sub">All recorded dates</div></div>
-  </div>
-  <div id="history-list" class="history-grid"><div style="color:var(--text2);font-size:13px">Loading…</div></div>
-</div>
-
-<!-- EXPORT -->
-<div id="page-export" class="page">
-  <div class="sec-header"><div class="sec-title">Export Data</div></div>
-  <div class="export-card">
-    <h3>Download as CSV</h3>
-    <p>Download a date-wise CSV of all recorded returns — opens in Excel or Google Sheets.</p>
-    <div class="export-row">
-      <select class="date-select" id="export-date1"></select>
-      <button class="btn btn-teal" onclick="exportCSV()">⬇ Download CSV</button>
-      <button class="btn btn-outline" onclick="exportAllCSV()">⬇ All Dates</button>
-    </div>
-  </div>
-  <div class="export-card">
-    <h3>Copy to Clipboard (Tab-Separated)</h3>
-    <p>Copy and paste directly into Excel or Google Sheets using Ctrl+V.</p>
-    <div class="export-row">
-      <select class="date-select" id="export-date2"></select>
-      <button class="btn btn-amber" onclick="copyTSV()">📋 Copy to Clipboard</button>
-    </div>
-  </div>
-</div>
 
 
-  <!-- COMMERCIAL SALES DASHBOARD -->
-  <div id="page-commsales" class="page comm-sales-page">
-    <div class="sec-header">
-      <div>
-        <div class="sec-title">Commercial 19 Kg — Sales Dashboard</div>
-        <div class="sec-sub">Agency-wise sales data · Dec 2025 · Jan 2026 · Feb 2026 · Mar-26 Stock</div>
+    <!-- COMMERCIAL SALES DASHBOARD (integrated) -->
+    <div style="margin-top:32px;padding-top:24px;border-top:2px solid var(--border)">
+      <div class="sec-header">
+        <div>
+          <div class="sec-title">📦 Commercial 19 Kg — Sales Dashboard</div>
+          <div class="sec-sub">Agency-wise sales data · Dec 2025 · Jan 2026 · Feb 2026 · Mar-26 Stock</div>
+        </div>
+      </div>
+
       </div>
     </div>
 
@@ -574,7 +521,66 @@ tfoot td.left{text-align:left;color:var(--text2);font-family:var(--font)}
         </table>
       </div>
     </div>
+  
+    </div>
   </div>
+
+<!-- ENTRY -->
+<div id="page-entry" class="page">
+  <div id="entry-locked" style="max-width:480px;margin:40px auto;text-align:center">
+    <div style="font-size:48px;margin-bottom:16px">🔒</div>
+    <h2 style="font-size:18px;font-weight:700;margin-bottom:8px">Entry Protected</h2>
+    <p style="color:var(--text2);margin-bottom:24px;font-size:14px">Enter the operator PIN to access the daily data entry form.</p>
+    <button class="btn btn-teal" style="margin:0 auto" onclick="showPinModal()">Enter PIN</button>
+  </div>
+  <div id="entry-unlocked" style="display:none">
+    <div class="sec-header">
+      <div><div class="sec-title">Daily Return Entry</div><div class="sec-sub" id="entry-time-notice">Loading…</div></div>
+      <button class="btn btn-outline btn-sm" onclick="lockEntry()">🔒 Lock</button>
+    </div>
+    <div class="entry-header">
+      <label style="font-size:13px;font-weight:600;color:var(--text2)">Return Date:</label>
+      <input type="date" class="entry-date-input" id="entry-date">
+      <button class="btn btn-teal btn-sm" onclick="loadEntryForm()">Load Form</button>
+      <span id="entry-status-msg" style="font-size:12px;color:var(--text2)"></span>
+    </div>
+    <div id="entry-notice"></div>
+    <div id="entry-form-wrap"></div>
+  </div>
+</div>
+
+<!-- HISTORY -->
+<div id="page-history" class="page">
+  <div class="sec-header">
+    <div><div class="sec-title">Daily Return History</div><div class="sec-sub">All recorded dates</div></div>
+  </div>
+  <div id="history-list" class="history-grid"><div style="color:var(--text2);font-size:13px">Loading…</div></div>
+</div>
+
+<!-- EXPORT -->
+<div id="page-export" class="page">
+  <div class="sec-header"><div class="sec-title">Export Data</div></div>
+  <div class="export-card">
+    <h3>Download as CSV</h3>
+    <p>Download a date-wise CSV of all recorded returns — opens in Excel or Google Sheets.</p>
+    <div class="export-row">
+      <select class="date-select" id="export-date1"></select>
+      <button class="btn btn-teal" onclick="exportCSV()">⬇ Download CSV</button>
+      <button class="btn btn-outline" onclick="exportAllCSV()">⬇ All Dates</button>
+    </div>
+  </div>
+  <div class="export-card">
+    <h3>Copy to Clipboard (Tab-Separated)</h3>
+    <p>Copy and paste directly into Excel or Google Sheets using Ctrl+V.</p>
+    <div class="export-row">
+      <select class="date-select" id="export-date2"></select>
+      <button class="btn btn-amber" onclick="copyTSV()">📋 Copy to Clipboard</button>
+    </div>
+  </div>
+</div>
+
+
+
 </main>
 
 <!-- PIN MODAL -->
@@ -1726,20 +1732,10 @@ if(ddEl){ ddEl.addEventListener("change",function(){ window.updateCommDashCards(
     }
   }
 
-  // Initialize when the comm sales page becomes active
-  var _csdbInited = false;
-  var origShowPage = window.showPage;
-  window.showPage = function(id, btn) {
-    origShowPage(id, btn);
-    if (id === 'commsales') {
-      if (!_csdbInited) {
-        _csdbInited = true;
-        csdbRenderKPIs();
-        csdbRenderTable();
-        csdbRenderCharts();
-      }
-    }
-  };
+  // Initialize immediately (integrated into main dashboard)
+  csdbRenderKPIs();
+  csdbRenderTable();
+  csdbRenderCharts();
 })();
 
 </script>
