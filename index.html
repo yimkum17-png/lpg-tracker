@@ -1179,7 +1179,7 @@ window.renderCommSchematic = function(){
     var rows = COMM_STATIC.filter(function(a){ return a.omc===omc; });
     if(!rows.length) return;
     // OMC group header
-    html += '<tr class="grp-hdr" onclick="toggleSchemaGroup(''+omc+'')" data-grp="'+omc+'">'
+    html += '<tr class="grp-hdr" onclick="toggleSchemaGroup(\''+omc+'\')" data-grp="'+omc+'">'
       +'<td colspan="15" style="color:'+COMM_OMC_COLOR[omc]+'"><i id="sg-arr-'+omc+'" style="display:inline-block;margin-right:6px;transition:transform .2s">▼</i>'+omc+'<span style="font-size:10px;color:#5a7490;font-weight:400;margin-left:8px">'+rows.length+' agencies</span></td></tr>';
     // sub-header
     html += '<tr class="grp-sub comm-sg-row-'+omc+'">'
