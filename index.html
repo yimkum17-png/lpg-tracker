@@ -446,10 +446,7 @@ tfoot td.left{text-align:left;color:var(--text2);font-family:var(--font)}
 
     <!-- CHARTS -->
     <div class="csdb-charts-grid">
-      <div class="csdb-chart-card">
-        <div class="csdb-chart-title">📈 Monthly Sales Trend — by Category</div>
-        <div class="csdb-chart-wrap"><canvas id="csdb-chart-trend"></canvas></div>
-      </div>
+      
       <div class="csdb-chart-card">
         <div class="csdb-chart-title">🏢 OMC-wise Sales Breakdown</div>
         <div class="csdb-chart-wrap"><canvas id="csdb-chart-omc"></canvas></div>
@@ -1645,18 +1642,6 @@ if(ddEl){ ddEl.addEventListener("change",function(){ window.updateCommDashCards(
       agg.others[0]+=r.decO; agg.others[1]+=r.janO; agg.others[2]+=r.febO;
       agg.total[0]+=(r.decH+r.decE+r.decO); agg.total[1]+=(r.janH+r.janE+r.janO); agg.total[2]+=(r.febH+r.febE+r.febO);
     });
-
-    // Chart 1: Trend line by category
-    var ctx1 = document.getElementById('csdb-chart-trend');
-    if (ctx1) {
-      if (_csdbCharts.trend) _csdbCharts.trend.destroy();
-      var datasets1 = [];
-      if (f==='all'||f==='hosp')   datasets1.push({label:'Hospitals',data:agg.hosp,borderColor:'#ff8c69',backgroundColor:'rgba(255,140,105,.12)',tension:.35,fill:true,pointBackgroundColor:'#ff8c69',pointRadius:4});
-      if (f==='all'||f==='edu')    datasets1.push({label:'Educational',data:agg.edu,borderColor:'#63b3ed',backgroundColor:'rgba(99,179,237,.12)',tension:.35,fill:true,pointBackgroundColor:'#63b3ed',pointRadius:4});
-      if (f==='all'||f==='others') datasets1.push({label:'Others',data:agg.others,borderColor:'#a0c4a0',backgroundColor:'rgba(160,196,160,.12)',tension:.35,fill:true,pointBackgroundColor:'#a0c4a0',pointRadius:4});
-      if (f==='all') datasets1.push({label:'Total',data:agg.total,borderColor:'#e8b84b',backgroundColor:'rgba(232,184,75,.08)',tension:.35,fill:false,pointBackgroundColor:'#e8b84b',pointRadius:5,borderWidth:2.5,borderDash:[5,3]});
-      _csdbCharts.trend = new Chart(ctx1.getContext('2d'),{type:'line',data:{labels:months,datasets:datasets1},options:JSON.parse(JSON.stringify(CSDB_CHART_OPTS))});
-    }
 
     // Chart 2: OMC-wise breakdown (grouped bar)
     var ctx2 = document.getElementById('csdb-chart-omc');
